@@ -33,15 +33,6 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: '1'
 		},
-		super: {
-			type: DataTypes.INTEGER(1),
-			allowNull: false,
-			defaultValue: '0'
-		},
-		user_group: {
-			type: DataTypes.INTEGER(4),
-			allowNull: false
-		},
 		last_login: {
 			type: DataTypes.DATE,
 			allowNull: true

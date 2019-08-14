@@ -20,6 +20,14 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(50),
 			allowNull: false
 		},
+		url: {
+			type: DataTypes.STRING(250),
+			allowNull: false
+		},
+		back_url: {
+			type: DataTypes.STRING(250),
+			allowNull: true
+		},
 		type: {
 			type: DataTypes.INTEGER(6),
 			allowNull: false

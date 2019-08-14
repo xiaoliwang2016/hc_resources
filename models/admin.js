@@ -1,32 +1,44 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('access', {
+	return sequelize.define('admin', {
 		id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		name: {
-			type: DataTypes.STRING(50),
+		user_no: {
+			type: DataTypes.INTEGER(11),
 			allowNull: false
 		},
-		remark: {
-			type: DataTypes.STRING(50),
+		user_name: {
+			type: DataTypes.STRING(100),
 			allowNull: false
 		},
-		type: {
-			type: DataTypes.INTEGER(4),
+		email: {
+			type: DataTypes.STRING(100),
+			allowNull: true
+		},
+		password: {
+			type: DataTypes.CHAR(32),
+			allowNull: true
+		},
+		department: {
+			type: DataTypes.STRING(50),
+			allowNull: true
+		},
+		status: {
+			type: DataTypes.INTEGER(1),
 			allowNull: false,
 			defaultValue: '1'
 		},
-		url: {
-			type: DataTypes.STRING(150),
+		last_login: {
+			type: DataTypes.DATE,
 			allowNull: true
 		},
 	}, {
-		tableName: 'access',
+		tableName: 'admin',
 		timestamps: true,
 		freezeTableName: true,
 		createdAt: false,

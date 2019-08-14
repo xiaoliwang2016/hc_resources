@@ -2,8 +2,7 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
-var api_router = require('./routes/api')
-var expressValidator = require('express-validator');
+var router = require('./routes')
 var app = express()
 
 
@@ -13,7 +12,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use(expressValidator())
-api_router(app)
+router(app)
 
 module.exports = app
