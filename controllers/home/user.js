@@ -24,13 +24,13 @@ class UserController{
                 model: ThemeModel
             }
         })
-        var themes = user.toJSON().themes
         if(user == null){
             res.json({
                 code: 0,
                 message: "账号密码不正确"
             })
         }
+        var themes = user.toJSON().themes
         if(!themes.length){
             res.json({
                 code: 0,
