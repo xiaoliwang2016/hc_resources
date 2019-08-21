@@ -32,6 +32,20 @@ class UserValidator {
         ])(req, res, next)
     }
 
+    list(req, res, next){
+        return validate([
+            body('theme_id').exists().withMessage('theme_id不能为空')
+        ])(req, res, next)
+    }
+
+    update(req, res, next){
+        return validate([
+            body('id').exists().withMessage('id不能为空'),
+            body('status').optional().isIn(['1', '0']).withMessage('0：禁用， 1：启用'),
+            body('email').optional().isEmail().withMessage('邮箱格式错误')
+        ])(req, res, next)
+    }
+
 }
 
 module.exports = new UserValidator()

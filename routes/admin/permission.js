@@ -6,6 +6,8 @@ const publicUrl = [
 
 const permission = function(req, res, next){
 
+    return next()
+
     //如果访问的公共接口 或者 用户为超级管理员 则跳过校验
     if(publicUrl.indexOf(req.path) != -1 || req.session.isSuper){
         return next()

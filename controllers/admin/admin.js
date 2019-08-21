@@ -24,6 +24,7 @@ class Admin {
                 model: ThemeModel
             }
         })
+
         if(user == null){
             return res.json({
                 code: 0,
@@ -163,7 +164,39 @@ class Admin {
         } catch (error) {
             res.send(error)
         }
-    } 
+    }
+
+    /**
+     * 查询某个主题下所有管理员
+     */
+    async list(req, res, next){
+        var data = await ThemeModel.findOne({
+            where: {
+                id: req.body.theme_id
+            },
+            include: [
+                {
+                    model: AdminModel
+                }
+            ]
+        })
+        res.json({
+            code: 1,
+            data: data ? data.admins : data
+        })
+    }
+
+    /**
+     * 更新管理员信息
+     */
+    async update(req, res, next){
+        var result = await AdminModel.update(req.body, {
+            where: {
+                id: req.body.id,
+            }
+        })
+        res.json(result)
+    }
 
 }
 
