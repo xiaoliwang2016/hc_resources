@@ -24,6 +24,7 @@ class UserController{
                 model: ThemeModel
             }
         })
+
         if(user == null){
             res.json({
                 code: 0,
@@ -38,63 +39,91 @@ class UserController{
             })
         }
 
-        user = await UserModel.findOne({
-            where: {
-                user_no: req.body.user_no,
-                password: md5(req.body.password)
-            },
-            attributes: {
-                exclude: ['update_time', 'status']
-            },
-            include: [
-                {
-                    model: RoleModel,
-                    where: {
-                        role_group: 0
-                    },
-                    attributes: {
-                        exclude: ['update_time', 'status']
-                    },
-                    include: [
-                        {
-                            model: ResourcesModel,
-                            // where: {
-                            //     theme_id: themes[0].id
-                            // },
-                            attributes: {
-                                exclude: ['update_time', 'status', "user_id", "public", "type"]
-                            },
-                            order: ['resources_order', 'DESC']
-                        }
-                    ]
-                },
-                {
-                    model: ResourcesModel,
-                    // where: {
-                    //     theme_id: themes[0].id
-                    // },
-                    attributes: {
-                        exclude: ['update_time', 'status', "user_id", "public", "type"]
-                    },
-                    order: ['resources_order', 'DESC']
-                }
-            ]
-        })
-        user.last_login = new Date()
-        await user.save()
-        //合并用户拥有的页面  生成树状结构
-        var user = user.toJSON(), resources = []
-        user.roles.forEach(item => {
-            resources = resources.concat(item.resources)
-        })
-        resources = resources.concat(user.resources)
-        user.resources = build_tree(resources, 0)
-        delete user.roles
-        user.themes = themes
+        //查出该用户对应主题信息，默认取一个主题
+        var defaultThemeID = user.themes[0].id
+        var resources = await this.getResourcesByThemeUser(user.id, defaultThemeID)
+
+        var data = user.toJSON()
+        data.resources = build_tree(resources, 0)
+
         res.json({
             code: 1,
             message: "登录成功",
-            data: user
+            data
+        })
+    }
+
+    /**
+     * 切换主题
+     */
+    switchTheme(req, res, next){
+
+    }
+
+    /**
+     * 指定 theme_id 和 user_id ，获得该用户在特定主题下所有资源
+     */
+    getResourcesByThemeUser(user_id, theme_id){
+        var resources = []
+
+        return new Promise(async (resolve, reject) => {
+            //获取该用户的权限，放入 resources 中
+            var userData = await UserModel.findOne({
+                where: {
+                    id: user_id
+                },
+                include: [
+                    {
+                        model: ResourcesModel,
+                        required: true,
+                        where: {
+                            theme_id
+                        },
+                        attributes: {
+                            exclude: ['update_time', 'status', "user_id", "public", "type"]
+                        },
+                        order: ['resources_order', 'DESC']
+                    }
+                ]
+            })
+            userData = userData.toJSON()
+            if(userData != null){
+                resources = resources.concat(userData.resources)
+            }
+            //获取该用户对应角色的所有权限，放入 resources 中
+            var roleData = await UserModel.findOne({
+                where: {
+                    id: user_id
+                },
+                include: [
+                    {
+                        model: RoleModel,
+                        where: {
+                            // theme_id,
+                            status: 1
+                        },
+                        attributes: {
+                            exclude: ['update_time', 'status']
+                        },
+                        include: [
+                            {
+                                model: ResourcesModel,
+                                attributes: {
+                                    exclude: ['update_time', 'status', "user_id", "public", "type"]
+                                },
+                                order: ['resources_order', 'DESC']
+                            }
+                        ]
+                    },
+                ]
+            })
+            roleData = roleData.toJSON()
+            if(roleData != null){
+                roleData.roles.forEach(role => {
+                    resources = resources.concat(role.resources)
+                })
+            }
+            resolve(resources)
         })
     }
 

@@ -24,6 +24,10 @@ var RoleResourcesModel = sequelize.import('../models/role_resources')
 var ThemeModel = sequelize.import('../models/theme')
 var UserThemeModel = sequelize.import('../models/user_theme')
 var AdminThemeModel = sequelize.import('../models/admin_theme')
+var AccessModel = sequelize.import('../models/access')
+var AdminAccessModel = sequelize.import('../models/admin_access')
+var RoleAccessModel = sequelize.import('../models/role_access')
+var AdminRoleModel = sequelize.import('../models/admin_role')
 
 UserModel.belongsToMany(RoleModel, {
     through:{
@@ -115,7 +119,59 @@ AdminModel.belongsToMany(ThemeModel, {
     constraints: false
 })
 
+AccessModel.belongsToMany(RoleModel, {
+    through: {
+        model: RoleAccessModel,
+        unique: false
+    },
+    foreignKey: 'access_id',
+    constraints: false
+})
 
+RoleModel.belongsToMany(AccessModel, {
+    through: {
+        model: RoleAccessModel,
+        unique: false
+    },
+    foreignKey: 'role_id',
+    constraints: false
+})
+
+AccessModel.belongsToMany(AdminModel, {
+    through: {
+        model: AdminAccessModel,
+        unique: false
+    },
+    foreignKey: 'access_id',
+    constraints: false
+})
+
+AdminModel.belongsToMany(AccessModel, {
+    through: {
+        model: AdminAccessModel,
+        unique: false
+    },
+    foreignKey: 'admin_id',
+    constraints: false
+})
+
+RoleModel.belongsToMany(AdminModel, {
+    through: {
+        model: AdminRoleModel,
+        unique: false
+    },
+    foreignKey: 'role_id',
+    constraints: false
+})
+
+AdminModel.belongsToMany(RoleModel, {
+    through: {
+        model: AdminRoleModel,
+        unique: false
+    },
+    foreignKey: 'admin_id',
+    constraints: false
+})
 
 
 async function init(){

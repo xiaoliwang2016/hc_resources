@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： 127.0.0.1:3306
--- 生成日期： 2019-08-14 09:30:43
+-- 生成日期： 2019-08-21 09:43:28
 -- 服务器版本： 5.7.24
 -- PHP 版本： 7.2.14
 
@@ -52,9 +52,9 @@ INSERT INTO `access` (`id`, `name`, `remark`, `type`, `url`, `update_time`, `del
 (5, 'edit_resources_1', '编辑一级菜单', 1, '/admin/resources/edit', '2019-08-14 07:28:31', NULL),
 (6, 'edit_resources_2', '编辑二级菜单', 1, '/admin/resources/edit', '2019-08-14 07:28:48', NULL),
 (7, 'edit_resources_3', '编辑三级菜单', 1, '/admin/resources/edit', '2019-08-14 07:28:57', NULL),
-(8, 'delete_resources_1', '编辑一级菜单', 1, '/admin/resources/delete', '2019-08-14 07:29:18', NULL),
-(9, 'delete_resources_2', '编辑二级菜单', 1, '/admin/resources/delete', '2019-08-14 07:29:33', NULL),
-(10, 'delete_resources_3', '编辑三级菜单', 1, '/admin/resources/delete', '2019-08-14 07:29:41', NULL),
+(8, 'delete_resources_1', '删除一级菜单', 1, '/admin/resources/delete', '2019-08-14 07:29:18', NULL),
+(9, 'delete_resources_2', '删除二级菜单', 1, '/admin/resources/delete', '2019-08-14 07:29:33', NULL),
+(10, 'delete_resources_3', '删除三级菜单', 1, '/admin/resources/delete', '2019-08-14 07:29:41', NULL),
 (11, 'list_user', '查看所有成员', 0, NULL, '2019-08-14 07:31:48', NULL),
 (12, 'assign_role', '为成员分配角色', 1, '/admin/role/assignToUser', '2019-08-14 07:46:20', NULL),
 (13, 'assign_resources_user', '为成员分配权限', 1, '/admin/resources/assignToUser', '2019-08-14 07:47:18', NULL),
@@ -79,19 +79,20 @@ CREATE TABLE IF NOT EXISTS `admin` (
   `password` char(32) COLLATE utf8_bin DEFAULT NULL COMMENT '密码',
   `department` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '部门',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
+  `super` tinyint(1) NOT NULL DEFAULT '0' COMMENT '超级管理员',
   `last_login` datetime DEFAULT NULL COMMENT '最后登录时间',
   `update_time` datetime NOT NULL,
   `delete_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- 转存表中的数据 `admin`
 --
 
-INSERT INTO `admin` (`id`, `user_no`, `user_name`, `email`, `password`, `department`, `status`, `last_login`, `update_time`, `delete_time`) VALUES
-(4, 9065878, '麻花疼', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, NULL, '2019-08-14 02:50:36', NULL),
-(5, 9065879, '巴拉巴拉小魔仙', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, NULL, '2019-08-14 02:54:27', NULL);
+INSERT INTO `admin` (`id`, `user_no`, `user_name`, `email`, `password`, `department`, `status`, `super`, `last_login`, `update_time`, `delete_time`) VALUES
+(1, 10000001, '巴拉巴拉小魔仙', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '部门一', 1, 0, NULL, '2019-08-21 07:17:12', NULL),
+(2, 10000000, '超管', 'admin@abc.com', 'e10adc3949ba59abbe56e057f20f883e', '总部', 1, 1, NULL, '2019-08-20 00:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -103,9 +104,26 @@ DROP TABLE IF EXISTS `admin_access`;
 CREATE TABLE IF NOT EXISTS `admin_access` (
   `admin_id` int(11) NOT NULL,
   `access_id` int(11) NOT NULL,
+  `theme_id` int(11) NOT NULL,
   KEY `admin_id` (`admin_id`),
-  KEY `access_id` (`access_id`)
+  KEY `access_id` (`access_id`),
+  KEY `theme_id` (`theme_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- 转存表中的数据 `admin_access`
+--
+
+INSERT INTO `admin_access` (`admin_id`, `access_id`, `theme_id`) VALUES
+(1, 4, 1),
+(1, 7, 1),
+(1, 10, 1),
+(1, 3, 2),
+(1, 4, 2),
+(1, 6, 2),
+(1, 7, 2),
+(1, 9, 2),
+(1, 10, 2);
 
 -- --------------------------------------------------------
 
@@ -126,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `admin_role` (
 --
 
 INSERT INTO `admin_role` (`admin_id`, `role_id`) VALUES
-(4, 1);
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -147,8 +165,7 @@ CREATE TABLE IF NOT EXISTS `admin_theme` (
 --
 
 INSERT INTO `admin_theme` (`admin_id`, `theme_id`) VALUES
-(4, 1),
-(5, 2);
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -177,26 +194,15 @@ CREATE TABLE IF NOT EXISTS `resources` (
   `update_time` datetime NOT NULL COMMENT '修改日期',
   `delete_time` datetime DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- 转存表中的数据 `resources`
 --
 
 INSERT INTO `resources` (`id`, `pid`, `theme_id`, `menu_title`, `url`, `back_url`, `type`, `status`, `public`, `user_id`, `resources_order`, `open_type`, `origin`, `verify`, `verify_id`, `remark`, `update_time`, `delete_time`) VALUES
-(1, 0, 1, '考勤', 'https://www.sina.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 02:58:48', NULL),
-(2, 0, 1, '财务', 'https://www.sina.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 02:59:56', NULL),
-(3, 0, 1, '销售', 'https://www.sina.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:00:03', NULL),
-(4, 1, 1, '请假', 'https://www.sina.com', NULL, 2, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:00:27', NULL),
-(5, 1, 1, '出勤', 'https://www.sina.com', NULL, 2, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:00:38', NULL),
-(6, 4, 1, '请假用时分布', 'https://www.sina.com', NULL, 3, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:01:11', NULL),
-(7, 4, 1, '请假排名分析', 'https://www.sina.com', NULL, 3, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:01:28', NULL),
-(8, 5, 1, '出勤排名分析', 'https://www.sina.com', NULL, 3, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:01:52', NULL),
-(9, 5, 1, '出勤用时分布', 'https://www.sina.com', NULL, 3, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 03:06:36', NULL),
-(11, 3, 3, '售前', 'www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 07:56:47', NULL),
-(12, 3, 3, '售后', 'www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 07:56:54', NULL),
-(13, 11, 3, '售前人员安排', 'www.baidu.com', NULL, 1, 1, 0, 1, 1, 0, '其他系统', 0, NULL, NULL, '2019-08-12 07:57:27', NULL),
-(14, 11, 3, '售前次数统计', 'www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-12 07:57:37', NULL);
+(1, 0, 1, '一级菜单(1)', 'https://www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-21 09:14:47', NULL),
+(2, 0, 1, '一级菜单(2)', 'https://www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-21 09:19:07', NULL);
 
 -- --------------------------------------------------------
 
@@ -216,17 +222,15 @@ CREATE TABLE IF NOT EXISTS `role` (
   `update_time` datetime NOT NULL,
   `delete_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- 转存表中的数据 `role`
 --
 
 INSERT INTO `role` (`id`, `theme_id`, `role_name`, `role_desc`, `status`, `role_group`, `remark`, `update_time`, `delete_time`) VALUES
-(1, 1, '考勤主管', NULL, 1, 0, NULL, '2019-08-12 05:56:06', NULL),
-(2, 1, '考勤专员', NULL, 1, 1, NULL, '2019-08-12 05:56:49', NULL),
-(3, 1, 'HR管理员', NULL, 1, 1, NULL, '2019-08-14 03:28:39', NULL),
-(4, 1, '销售管理员', NULL, 1, 1, NULL, '2019-08-14 03:28:49', NULL);
+(1, 1, '主题一后台角色一', NULL, 1, 1, NULL, '2019-08-21 07:36:53', NULL),
+(2, 1, '主题一后台角色二', NULL, 1, 1, NULL, '2019-08-21 07:37:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -242,6 +246,18 @@ CREATE TABLE IF NOT EXISTS `role_access` (
   KEY `access_id` (`access_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- 转存表中的数据 `role_access`
+--
+
+INSERT INTO `role_access` (`role_id`, `access_id`) VALUES
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9);
+
 -- --------------------------------------------------------
 
 --
@@ -255,19 +271,6 @@ CREATE TABLE IF NOT EXISTS `role_resources` (
   KEY `resources_id` (`resources_id`),
   KEY `role_id` (`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- 转存表中的数据 `role_resources`
---
-
-INSERT INTO `role_resources` (`resources_id`, `role_id`) VALUES
-(1, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1),
-(9, 1);
 
 -- --------------------------------------------------------
 
@@ -293,9 +296,9 @@ CREATE TABLE IF NOT EXISTS `theme` (
 --
 
 INSERT INTO `theme` (`id`, `theme_name`, `department`, `manager_id`, `status`, `remark`, `update_time`, `delete_time`) VALUES
-(1, 'HR主题', 'HR部门', 1, 1, NULL, '2019-08-12 06:07:24', NULL),
-(2, '财务主题', '财务部门', 1, 1, NULL, '2019-08-12 06:08:01', NULL),
-(3, '销售主题', '销售部门', 1, 1, NULL, '2019-08-12 07:55:59', NULL);
+(1, '主题一', '部门一', 1, 1, NULL, '2019-08-21 07:11:40', NULL),
+(2, '主题二', '部门二', 1, 1, NULL, '2019-08-21 07:14:49', NULL),
+(3, '主题三', '部门三', 1, 1, NULL, '2019-08-21 07:15:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -316,18 +319,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `update_time` datetime NOT NULL,
   `delete_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- 转存表中的数据 `user`
---
-
-INSERT INTO `user` (`id`, `user_no`, `user_name`, `email`, `password`, `department`, `status`, `last_login`, `update_time`, `delete_time`) VALUES
-(2, 9065875, '肖黎望', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, '2019-08-13 04:24:20', '2019-08-13 04:24:20', NULL),
-(3, 9065876, '张三', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, '2019-08-14 00:32:08', '2019-08-14 00:32:08', NULL),
-(4, 9065877, '李四', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, NULL, '2019-08-12 02:22:28', NULL),
-(5, 9065878, '张伟', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, '2019-08-13 09:29:51', '2019-08-13 09:29:51', NULL),
-(7, 9065879, '王铁蛋', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '开发部', 1, NULL, '2019-08-12 11:08:56', NULL);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -343,24 +335,6 @@ CREATE TABLE IF NOT EXISTS `user_resources` (
   KEY `resources_id` (`resources_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- 转存表中的数据 `user_resources`
---
-
-INSERT INTO `user_resources` (`user_id`, `resources_id`) VALUES
-(2, 7),
-(2, 6),
-(2, 5),
-(2, 1),
-(3, 7),
-(3, 6),
-(3, 5),
-(3, 1),
-(2, 3),
-(2, 11),
-(2, 13),
-(5, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -375,16 +349,6 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   KEY `role_id` (`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- 转存表中的数据 `user_role`
---
-
-INSERT INTO `user_role` (`user_id`, `role_id`) VALUES
-(3, 2),
-(3, 1),
-(5, 1),
-(5, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -398,17 +362,6 @@ CREATE TABLE IF NOT EXISTS `user_theme` (
   KEY `user_id` (`user_id`),
   KEY `theme_id` (`theme_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- 转存表中的数据 `user_theme`
---
-
-INSERT INTO `user_theme` (`user_id`, `theme_id`) VALUES
-(4, 1),
-(5, 1),
-(4, 2),
-(5, 2),
-(3, 2);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

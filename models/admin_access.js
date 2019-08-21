@@ -9,6 +9,10 @@ module.exports = function(sequelize, DataTypes) {
 		access_id: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false
+		},
+		theme_id: {
+			type: DataTypes.INTEGER(11),
+			allowNull: false
 		}
 	}, {
 		tableName: 'admin_access',

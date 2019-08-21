@@ -37,7 +37,8 @@ class AccessValidator {
                     }
                 })
             }),
-            body('access_id').isArray().withMessage('resources_id 格式为数组')
+            body('access_id').isArray().withMessage('resources_id 格式为数组'),
+            body('theme_id').exists().withMessage('theme_id 不能为空')
         ])(req, res, next)
     }
 

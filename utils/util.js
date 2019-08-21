@@ -22,6 +22,19 @@ const build_tree = function (arr, id) {
     return childs;
 }
 
+const removeDuplicateViaId = function(arr){
+    var result = [];
+    var obj = {};
+    for(var i = 0; i < arr.length; i++){
+       if(!obj[arr[i].id]){
+          result.push(arr[i]);
+          obj[arr[i].id] = true;
+       }
+    }
+    return result
+}
+
 module.exports = {
-    build_tree
+    build_tree,
+    removeDuplicateViaId
 }

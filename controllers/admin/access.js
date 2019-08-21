@@ -64,16 +64,18 @@ class Access {
                 admin_id: req.body.admin_id,
                 access_id: {
                     [Op.in]: req.body.access_id
-                }
+                },
+                theme_id: req.body.theme_id
             },
             force: true
         })
         var data = req.body.access_id.map(item => ({
             access_id: item,
-            admin_id: req.body.admin_id
+            admin_id: req.body.admin_id,
+            theme_id: req.body.theme_id
         }))
         await AdminAccessModel.bulkCreate(data, {
-            fields: ['access_id', 'admin_id']
+            fields: ['access_id', 'admin_id', 'theme_id']
         })
         res.send({
             code: 1,
