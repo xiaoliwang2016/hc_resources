@@ -1,10 +1,17 @@
 const validate = require('./errorHandler')
-const { body } = require('express-validator')
+const { body, query } = require('express-validator')
 var sequelize = require('../db/mysql').sequelize
 
 var ThemeModel = sequelize.import('../models/theme')
 
 class ThemeValidator {
+
+    list(req, res, next){
+        return validate([
+            query('pageNo').isInt().withMessage('pageNo不能为空'),
+            query('pageSize').isInt().withMessage('pageSize不能为空')
+        ])(req, res, next)
+    }
 
     add(req, res, next){
         return validate([

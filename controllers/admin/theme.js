@@ -7,9 +7,15 @@ var UserThemeModel = sequelize.import('../../models/user_theme')
 class ThemeController{
 
     /**
-     * 添加租户，超级管理员才有权限进行此行为
+     * 添加主题，超级管理员才有权限进行此行为
      */
     add(req, res, next){
+        if(!req.session.isSuper){
+            return res.json({
+                code: 0,
+                message: '只有超级管理员才能进行此操作'
+            })
+        }
         ThemeModel.findOrCreate({
             where: {
                 theme_name: req.body.theme_name
@@ -18,6 +24,18 @@ class ThemeController{
         }).then(([instance, created]) => {
             res.json(instance)
         })
+    }
+
+    /**
+     * 查看所有主题
+     */
+    async list(req, res, next){
+        var list = await ThemeModel.findAndCountAll({
+            offset: (req.query.pageNo - 1) * req.query.pageSize,
+            limit: parseInt(req.query.pageSize),
+            order: [['update_time', 'DESC']]
+        })
+        res.json(list)
     }
 
     /**

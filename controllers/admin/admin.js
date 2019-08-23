@@ -21,10 +21,13 @@ class Admin {
                 password: md5(req.body.password)
             },
             include: {
-                model: ThemeModel
+                model: ThemeModel,
+                where: {
+                    status: 1
+                },
+                required: false
             }
         })
-
         if(user == null){
             return res.json({
                 code: 0,
@@ -32,16 +35,15 @@ class Admin {
             })
         }
         user = user.toJSON()
-        
+        req.session.isSuper = Boolean(user.super)
+        //超管默认读取第一个主题
         if(user.super){
-            req.session.isSuper = true
-            return res.json({
-                code: 1,
-                message: "超级管理员登录成功"
+            user.themes = await ThemeModel.findAll({
+                order: [['update_time', 'DESC']],
+                limit: 1
             })
         }
-        var themes = user.themes
-        if(!themes.length){
+        if(!user.themes.length && user.super == 0){
             return res.json({
                 code: 0,
                 message: "该管理员没有分配主题"
@@ -84,7 +86,7 @@ class Admin {
                 include: [
                     {
                         model: AccessModel,
-                        required: true,
+                        required: false,
                         attributes: {
                             exclude: ['update_time']
                         },
@@ -96,8 +98,10 @@ class Admin {
                     }
                 ]
             })
-            adminData = adminData.toJSON()
+            
+            
             if(adminData != null){
+                adminData = adminData.toJSON()
                 accesses = accesses.concat(adminData.accesses)
             }
             //获取该用户对应角色的所有权限，放入 resources 中
@@ -108,6 +112,7 @@ class Admin {
                 include: [
                     {
                         model: RoleModel,
+                        required: false,
                         where: {
                             status: 1
                         },
@@ -122,8 +127,8 @@ class Admin {
                     },
                 ]
             })
-            roleData = roleData.toJSON()
             if(roleData != null){
+                roleData = roleData.toJSON()
                 roleData.roles.forEach(role => {
                     accesses = accesses.concat(role.accesses)
                 })
@@ -190,12 +195,15 @@ class Admin {
      * 更新管理员信息
      */
     async update(req, res, next){
-        var result = await AdminModel.update(req.body, {
+        var [ affectedCount ] = await AdminModel.update(req.body, {
             where: {
                 id: req.body.id,
             }
         })
-        res.json(result)
+        res.json({
+            code: 1,
+            message: affectedCount > 0 ? '更新成功' : '更新失败'
+        })
     }
 
 }

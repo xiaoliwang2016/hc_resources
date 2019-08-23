@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： 127.0.0.1:3306
--- 生成日期： 2019-08-21 09:43:28
+-- 生成日期： 2019-08-23 09:48:43
 -- 服务器版本： 5.7.24
 -- PHP 版本： 7.2.14
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `user_no`, `user_name`, `email`, `password`, `department`, `status`, `super`, `last_login`, `update_time`, `delete_time`) VALUES
-(1, 10000001, '巴拉巴拉小魔仙', '846590046@qq.com', 'e10adc3949ba59abbe56e057f20f883e', '部门一', 1, 0, NULL, '2019-08-21 07:17:12', NULL),
+(1, 10000001, '巴拉巴拉小魔仙', 'balabala@abc.com', 'e10adc3949ba59abbe56e057f20f883e', '部门一', 1, 0, NULL, '2019-08-22 01:44:31', NULL),
 (2, 10000000, '超管', 'admin@abc.com', 'e10adc3949ba59abbe56e057f20f883e', '总部', 1, 1, NULL, '2019-08-20 00:00:00', NULL);
 
 -- --------------------------------------------------------
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `resources` (
   `pid` int(11) NOT NULL,
   `theme_id` int(11) NOT NULL COMMENT '主题ID',
   `menu_title` varchar(50) COLLATE utf8_bin NOT NULL COMMENT '菜单显示名称',
-  `url` varchar(250) COLLATE utf8_bin NOT NULL COMMENT '资源链接',
+  `url` varchar(250) COLLATE utf8_bin DEFAULT NULL COMMENT '资源链接',
   `back_url` varchar(250) COLLATE utf8_bin DEFAULT NULL COMMENT '备用链接',
   `type` smallint(6) NOT NULL COMMENT '一级/二级/三级菜单',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
@@ -188,21 +188,41 @@ CREATE TABLE IF NOT EXISTS `resources` (
   `resources_order` smallint(6) NOT NULL DEFAULT '0' COMMENT '排序',
   `open_type` int(11) NOT NULL DEFAULT '0' COMMENT '当前窗口/新窗口',
   `origin` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '来源',
+  `back_origin` varchar(30) COLLATE utf8_bin DEFAULT NULL COMMENT '备用地址来源',
   `verify` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否需要登录',
   `verify_id` int(11) DEFAULT NULL COMMENT '登录账号',
   `remark` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT '备注',
   `update_time` datetime NOT NULL COMMENT '修改日期',
   `delete_time` datetime DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- 转存表中的数据 `resources`
 --
 
-INSERT INTO `resources` (`id`, `pid`, `theme_id`, `menu_title`, `url`, `back_url`, `type`, `status`, `public`, `user_id`, `resources_order`, `open_type`, `origin`, `verify`, `verify_id`, `remark`, `update_time`, `delete_time`) VALUES
-(1, 0, 1, '一级菜单(1)', 'https://www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-21 09:14:47', NULL),
-(2, 0, 1, '一级菜单(2)', 'https://www.baidu.com', NULL, 1, 1, 0, 1, 0, 0, '其他系统', 0, NULL, NULL, '2019-08-21 09:19:07', NULL);
+INSERT INTO `resources` (`id`, `pid`, `theme_id`, `menu_title`, `url`, `back_url`, `type`, `status`, `public`, `user_id`, `resources_order`, `open_type`, `origin`, `back_origin`, `verify`, `verify_id`, `remark`, `update_time`, `delete_time`) VALUES
+(1, 0, 1, '考勤', '', '', 1, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 03:58:52', NULL),
+(2, 0, 1, '人事', '', '', 1, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:11:18', NULL),
+(3, 0, 1, '销售', '', '', 1, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:13:20', NULL),
+(4, 0, 1, '安保', '', '', 1, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:18:48', NULL),
+(9, 1, 1, '出差', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:33:57', NULL),
+(8, 1, 1, '请假', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:33:52', NULL),
+(10, 1, 1, '加班', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:34:04', NULL),
+(11, 2, 1, '转正', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:35:47', NULL),
+(12, 2, 1, '调动', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:35:53', '2019-08-23 09:40:27'),
+(13, 2, 1, '离职', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:36:00', NULL),
+(14, 9, 1, '出差记录', '', '', 3, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:37:05', NULL),
+(15, 9, 1, '出差申请', '', '', 3, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:37:10', NULL),
+(16, 9, 1, '出差报告', '', '', 3, 0, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:37:40', NULL),
+(17, 8, 1, '可用假期查询', '', '', 3, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:39:18', NULL),
+(18, 8, 1, '请休假申请', '', '', 3, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:39:30', NULL),
+(19, 8, 1, '销假申请', '', '', 3, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 06:39:43', NULL),
+(20, 3, 1, '售前', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 08:43:59', NULL),
+(21, 3, 1, '售后', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 08:44:24', NULL),
+(22, 3, 1, '客户', '', '', 2, 1, 0, 2, 0, 0, 'Tableau', 'Tableau', 0, NULL, NULL, '2019-08-23 08:55:09', NULL),
+(23, 22, 1, '新客户统计', 'https://www.sina.com.cn/', '', 3, 1, 1, 2, 0, 0, '其他系统', 'Tableau', 0, NULL, NULL, '2019-08-23 09:26:18', NULL),
+(24, 22, 1, '老客户统计', 'https://www.baidu.com/', '', 3, 1, 1, 2, 0, 0, '其他系统', 'Tableau', 0, NULL, NULL, '2019-08-23 08:56:39', NULL);
 
 -- --------------------------------------------------------
 
@@ -319,7 +339,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   `update_time` datetime NOT NULL,
   `delete_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- 转存表中的数据 `user`
+--
+
+INSERT INTO `user` (`id`, `user_no`, `user_name`, `email`, `password`, `department`, `status`, `last_login`, `update_time`, `delete_time`) VALUES
+(2, 10000001, 'biu~ 巴拉巴拉小魔仙', 'balabala@abc.com', 'e10adc3949ba59abbe56e057f20f883e', '部门一', 1, NULL, '2019-08-22 07:35:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -362,6 +389,13 @@ CREATE TABLE IF NOT EXISTS `user_theme` (
   KEY `user_id` (`user_id`),
   KEY `theme_id` (`theme_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- 转存表中的数据 `user_theme`
+--
+
+INSERT INTO `user_theme` (`user_id`, `theme_id`) VALUES
+(2, 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -27,6 +27,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 	}, {
 		tableName: 'access',
+		paranoid: true,
 		timestamps: true,
 		freezeTableName: true,
 		createdAt: false,

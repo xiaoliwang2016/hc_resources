@@ -15,7 +15,7 @@ class ResourcesValidator {
 
     edit(req, res, next){
         return validate([
-            post('id').exists().withMessage('ID不能为空，字段：id')
+            body('id').exists().withMessage('ID不能为空，字段：id')
         ])(req, res, next)
     }
 
@@ -24,13 +24,16 @@ class ResourcesValidator {
             body('pid').exists().withMessage('父ID不能为空，字段：pid'),
             body('theme_id').exists().withMessage('主题ID不能为空，字段：theme_id'),
             body('menu_title').exists().withMessage('菜单名称不能为空，字段：menu_title'),
-            body('url').isURL().withMessage('url格式不正确，字段：url'),
-            body('back_url').optional().isURL().withMessage('url格式不正确，字段：back_url'),
+            // body('url').optional().custom((value, { req }) => {
+            //     if(req.body.type == 3 && !value){
+            //         return Promise.reject('三级标题url不能为空')
+            //     }
+            // }),
             body('type').isIn(['1', '2', '3']).withMessage('请指定菜单级别，字段：type'),
-            body('status').isIn(['1', '0']),
+            body('status').optional().isIn(['1', '0']),
             body('public').isIn(['1', '0']),
             body('user_id').isInt().withMessage('创建者ID不能为空，字段：muser_id'),
-            body('resources_order').isInt().exists().withMessage('排序不能为空，字段：resources_order'),
+            body('resources_order').optional().isInt().withMessage('排序不能为空，字段：resources_order'),
             body('open_type').isIn(['1', '0']).withMessage('0：当前窗口打开， 1：新窗口打开')
         ])(req, res, next)
     }

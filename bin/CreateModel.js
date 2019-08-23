@@ -12,6 +12,7 @@ getTables().then(res => {
         directory: path.resolve(__dirname, '../models'),
         port: config.port,
         additional: {
+            paranoid: true,
             timestamps: true,
             freezeTableName: true,
             createdAt: false,

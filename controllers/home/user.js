@@ -32,10 +32,11 @@ class UserController{
             })
         }
         var themes = user.toJSON().themes
+   
         if(!themes.length){
             res.json({
                 code: 0,
-                message: "该用户没有分配主题"
+                message: "该用户没有分配主题,请联系管理员"
             })
         }
 
@@ -75,7 +76,7 @@ class UserController{
                 include: [
                     {
                         model: ResourcesModel,
-                        required: true,
+                        required: false,
                         where: {
                             theme_id
                         },
@@ -98,6 +99,7 @@ class UserController{
                 include: [
                     {
                         model: RoleModel,
+                        required: false,
                         where: {
                             // theme_id,
                             status: 1
@@ -108,6 +110,7 @@ class UserController{
                         include: [
                             {
                                 model: ResourcesModel,
+                                required: false,
                                 attributes: {
                                     exclude: ['update_time', 'status', "user_id", "public", "type"]
                                 },

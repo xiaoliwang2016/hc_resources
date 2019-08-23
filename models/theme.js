@@ -31,6 +31,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 	}, {
 		tableName: 'theme',
+		paranoid: true,
 		timestamps: true,
 		freezeTableName: true,
 		createdAt: false,

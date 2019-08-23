@@ -9,9 +9,9 @@ module.exports = validations => {
             return next()
         }
 
-        res.status(422).json({
+        res.status(200).json({
             code: 0,
-            errors: errors.array() 
+            message: errors.array()
         })
     }
 }

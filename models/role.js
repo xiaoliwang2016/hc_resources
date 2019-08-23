@@ -36,6 +36,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 	}, {
 		tableName: 'role',
+		paranoid: true,
 		timestamps: true,
 		freezeTableName: true,
 		createdAt: false,

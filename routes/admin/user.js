@@ -7,5 +7,4 @@ router.get('/list', Controller.list)
 router.post('/add', Validator.add, Controller.addUserToTheme)
 router.post('/update', Validator.edit, Controller.edit)
 
-
 module.exports = router;

@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		url: {
 			type: DataTypes.STRING(250),
-			allowNull: false
+			allowNull: true
 		},
 		back_url: {
 			type: DataTypes.STRING(250),
@@ -60,6 +60,10 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(50),
 			allowNull: true
 		},
+		back_origin: {
+			type: DataTypes.STRING(30),
+			allowNull: true
+		},
 		verify: {
 			type: DataTypes.INTEGER(4),
 			allowNull: false,
@@ -75,6 +79,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 	}, {
 		tableName: 'resources',
+		paranoid: true,
 		timestamps: true,
 		freezeTableName: true,
 		createdAt: false,

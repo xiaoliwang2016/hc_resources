@@ -1,7 +1,8 @@
 //公开接口，无需校验
 const publicUrl = [
     '/admin/admin/login',
-    '/admin/admin/logout'
+    '/admin/admin/logout',
+    
 ]
 
 const permission = function(req, res, next){

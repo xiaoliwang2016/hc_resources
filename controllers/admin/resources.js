@@ -16,11 +16,14 @@ class ResourcesController{
             where: {
                 theme_id: req.query.theme_id
             },
-            order: ["resources_order", "DESC"],
+            order: [["resources_order", "DESC"]],
             raw: true
         }).then(list => {
             list = build_tree(list, 0)
-            res.json(list)
+            res.json({
+                code: 1,
+                data: list
+            })
         })
     }
 
@@ -31,11 +34,22 @@ class ResourcesController{
         ResourcesModel.findOrCreate({
             where: {
                 pid: req.body.pid,
+                theme_id: req.body.theme_id,
                 menu_title: req.body.menu_title
             },
             defaults: req.body
         }).then(([instance, created]) => {
-            res.json(instance)
+            if(created){
+                res.json({
+                    code: 1,
+                    data: instance
+                })
+            }else{
+                res.json({
+                    code: 0,
+                    message: '该标题已创建'
+                })
+            }
         })
     }
 
@@ -44,11 +58,29 @@ class ResourcesController{
      */
     edit(req, res, next){
         ResourcesModel.update(req.body, {
-            where: req.body.id
+            where: {
+                id: req.body.id
+            }
         }).then(([affectedCount, affectedRows]) => {
             res.json({
                 code: 1,
                 message: '更新成功'
+            })
+        })
+    }
+
+    /**
+     * 删除
+     */
+    delete(req, res, next){
+        ResourcesModel.destroy({
+            where: {
+                id: req.body.id
+            }
+        }).then(affectedRows => {
+            res.json({
+                code: 1,
+                message: '删除成功'
             })
         })
     }
