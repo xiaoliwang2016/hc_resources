@@ -1,5 +1,5 @@
 const validate = require('./errorHandler')
-const { body } = require('express-validator')
+const { body, query } = require('express-validator')
 
 class UserValidator {
 
@@ -34,7 +34,7 @@ class UserValidator {
 
     list(req, res, next){
         return validate([
-            body('theme_id').exists().withMessage('theme_id不能为空')
+            query('theme_id').exists().withMessage('theme_id不能为空')
         ])(req, res, next)
     }
 

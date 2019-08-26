@@ -177,7 +177,7 @@ class Admin {
     async list(req, res, next){
         var data = await ThemeModel.findOne({
             where: {
-                id: req.body.theme_id
+                id: req.query.theme_id
             },
             include: [
                 {

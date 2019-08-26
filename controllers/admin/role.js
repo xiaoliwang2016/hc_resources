@@ -7,6 +7,22 @@ var AdminRoleModel = sequelize.import('../../models/admin_role')
 
 class RoleController{
 
+    /**
+     * 查询某个主题下所有角色
+     */
+    async list(req, res, next){
+        var data = await RoleModel.findAll({
+            where: {
+                theme_id: req.query.theme_id,
+                role_group: req.query.role_group
+            }
+        })
+        res.json({
+            code: 1,
+            data
+        })
+    }
+
     add(req, res, next){
         RoleModel.findOrCreate({
             where: {
@@ -15,7 +31,10 @@ class RoleController{
             },
             defaults: req.body
         }).then(([instance, created]) => {
-            res.json(instance)
+            res.json({
+                code: 1,
+                data: instance
+            })
         })
     }
     /**

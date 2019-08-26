@@ -4,6 +4,7 @@ var md5 = require('md5')
 
 var UserModel = sequelize.import('../../models/user')
 var UserThemeModel = sequelize.import('../../models/user_theme')
+var ThemeModel = sequelize.import('../../models/theme')
 
 class User{
 
@@ -11,9 +12,23 @@ class User{
 
     }
 
-    list(req, res, next){
-        UserModel.findAll().then(list => {
-            res.json(list)
+    /**
+     * 查询某个主题下所有用户
+     */
+    async list(req, res, next){
+        var data = await ThemeModel.findOne({
+            where: {
+                id: req.query.theme_id
+            },
+            include: [
+                {
+                    model: UserModel
+                }
+            ]
+        })
+        res.json({
+            code: 1,
+            data: data ? data.users : data
         })
     }
 

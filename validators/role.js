@@ -1,5 +1,5 @@
 const validate = require('./errorHandler')
-const { body } = require('express-validator')
+const { body, query } = require('express-validator')
 var sequelize = require('../db/mysql').sequelize
 
 var UserModel = sequelize.import('../models/user')
@@ -43,6 +43,13 @@ class UserValidator {
             body('role_group').isIn(['1', '0']).withMessage('0：前台角色， 1：后台角色'),
             body('role_name').exists().withMessage('角色名称不能为空，字段：role_name'),
             body('status').optional().isIn(['1', '0']).withMessage('0：禁用， 1：启用')
+        ])(req, res, next)
+    }
+
+    list(req, res, next){
+        return validate([
+            query('theme_id').exists().withMessage('theme_id不能为空'),
+            query('role_group').isIn(['1', '0']).withMessage('0：前台角色， 1：后台角色'),
         ])(req, res, next)
     }
 
