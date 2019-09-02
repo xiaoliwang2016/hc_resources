@@ -35,7 +35,10 @@ class ThemeController{
             limit: parseInt(req.query.pageSize),
             order: [['update_time', 'DESC']]
         })
-        res.json(list)
+        res.json({
+            code: 1,
+            data: list
+        })
     }
 
     /**

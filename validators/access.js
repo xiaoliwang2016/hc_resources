@@ -42,6 +42,11 @@ class AccessValidator {
         ])(req, res, next)
     }
 
+    checkRoleId(req, res, next){
+        return validate([
+            query('role_id').exists().withMessage('role_id 不能为空')
+        ])(req, res, next)
+    }
 }
 
 module.exports = new AccessValidator()

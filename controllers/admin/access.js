@@ -2,6 +2,8 @@ var sequelize = require('../../db/mysql').sequelize
 var Op = require('../../db/mysql').Sequelize.Op
 
 var AccessModel = sequelize.import('../../models/access')
+var AdminModel = sequelize.import('../../models/admin')
+var RoleModel = sequelize.import('../../models/role')
 var RoleAccessModel = sequelize.import('../../models/role_access')
 var AdminAccessModel = sequelize.import('../../models/admin_access')
 
@@ -62,9 +64,6 @@ class Access {
         await AdminAccessModel.destroy({
             where: {
                 admin_id: req.body.admin_id,
-                access_id: {
-                    [Op.in]: req.body.access_id
-                },
                 theme_id: req.body.theme_id
             },
             force: true
@@ -81,6 +80,51 @@ class Access {
             code: 1,
             message: '分配管理员权限成功'
         }) 
+    }
+    
+    async list(req, res){
+        if(req.query.role_id){
+            var roleInfo = await RoleModel.findOne({
+                where: {
+                    id: req.query.role_id
+                },
+                include: [
+                    {
+                        model: AccessModel,
+                        required: false,
+                        attributes: ['id', 'name', 'remark', 'url']
+                    }
+                ]
+            })
+            var data = roleInfo.accesses
+        }else if(req.query.admin_id){
+            var adminInfo = await AdminModel.findOne({
+                where: {
+                    id: req.query.admin_id
+                },
+                include: [
+                    {
+                        model: AccessModel,
+                        through: {
+                            model: AdminAccessModel,
+                            where: {
+                                theme_id: req.query.theme_id
+                            }
+                        },
+                        required: false,
+                        attributes: ['id', 'name', 'remark', 'url']
+                    }
+                ]
+            })
+            var data = adminInfo.accesses
+        }else{
+            var data = await AccessModel.findAll()
+        }
+        
+        res.json({
+            code: 1,
+            data
+        })
     }
 
 }

@@ -16,7 +16,7 @@ class ThemeValidator {
     add(req, res, next){
         return validate([
             body('theme_name').exists().withMessage('主题名称不能为空，字段：theme_name'),
-            body('manager_id').exists().withMessage('管理员ID不能为空，字段：manager_id'),
+            body('manager').exists().withMessage('管理员不能为空，字段：manager'),
             body('status').optional().isIn(['1', '0']).withMessage('0：禁用， 1：启用')
         ])(req, res, next)
     }

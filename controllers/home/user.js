@@ -55,6 +55,29 @@ class UserController{
     }
 
     /**
+     * 列出该用户所有主题
+     */
+    listTheme(req, res, next){
+        UserModel.findOne({
+            where: {
+                id: req.query.id
+            },
+            include: [
+                {
+                    model: ThemeModel,
+                    required: false,
+                    attributes: ['theme_name', 'id']
+                }
+            ]
+        }).then(list => {
+            res.json({
+                code: 1,
+                data: list.themes
+            })
+        })
+    }
+
+    /**
      * 切换主题
      */
     switchTheme(req, res, next){

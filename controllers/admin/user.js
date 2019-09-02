@@ -1,10 +1,13 @@
 var sequelize = require('../../db/mysql').sequelize
 var Op = require('../../db/mysql').Sequelize.Op
 var md5 = require('md5')
+var { build_tree } = require('../../utils/util')
 
 var UserModel = sequelize.import('../../models/user')
 var UserThemeModel = sequelize.import('../../models/user_theme')
 var ThemeModel = sequelize.import('../../models/theme')
+var ResourcesModel = sequelize.import('../../models/resources')
+var RoleModel = sequelize.import('../../models/role')
 
 class User{
 
@@ -29,6 +32,62 @@ class User{
         res.json({
             code: 1,
             data: data ? data.users : data
+        })
+    }
+
+    /**
+     * 查询某个用户在某个主题下拥有的所有资源ID
+     */
+    listResources(req, res, next){
+        UserModel.findOne({
+            where: {
+                id: req.query.id
+            },
+            include: [
+                {
+                    model: ResourcesModel,
+                    required: false,
+                    where: {
+                        theme_id: req.query.theme_id
+                    }
+                }
+            ]
+        }).then(list => {
+            var data = list.toJSON()
+            data = data.resources
+            if(req.query.tree){
+                data = build_tree(data, 0)
+            }
+            res.json({
+                code: 1,
+                data
+            })
+        })
+    }
+    /**
+     * 查询某个用户拥有角色ID
+     */
+    listRole(req, res, next){
+        UserModel.findOne({
+            where: {
+                id: req.query.id
+            },
+            include: [
+                {
+                    model: RoleModel,
+                    required: false,
+                    attributes: ['id','role_name']
+                }
+            ]
+        }).then(list => {
+            var data = []
+            list.roles.map(item => {
+                data.push(item.id)
+            })
+            res.json({
+                code: 1,
+                data
+            })
         })
     }
 

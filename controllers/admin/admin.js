@@ -23,32 +23,29 @@ class Admin {
             include: {
                 model: ThemeModel,
                 where: {
-                    status: 1
+                    id: req.body.theme_id
                 },
                 required: false
             }
         })
-        if(user == null){
+        
+        if(!(user)){
             return res.json({
                 code: 0,
-                message: "账号密码不正确"
+                message: "账号密码不正确，请重新输入"
             })
         }
+
+        if(user.themes.length == 0){
+            return res.json({
+                code: 0,
+                message: "您不是该租户管理员，请联系管理员"
+            })
+        }
+
         user = user.toJSON()
         req.session.isSuper = Boolean(user.super)
-        //超管默认读取第一个主题
-        if(user.super){
-            user.themes = await ThemeModel.findAll({
-                order: [['update_time', 'DESC']],
-                limit: 1
-            })
-        }
-        if(!user.themes.length && user.super == 0){
-            return res.json({
-                code: 0,
-                message: "该管理员没有分配主题"
-            })
-        }
+
         //获取该管理员可以访问权限地址，保存在session中，以便做权限校验
         var accesses = await this.__getAccessByThemeAdmin(1, user.id), accessMap = []
         accesses.map(item => {
@@ -56,7 +53,10 @@ class Admin {
         })
         req.session.accessMap = accessMap
         user.accesses = accesses
-        res.json(user)
+        res.json({
+            code: 1,
+            data: user
+        })
     }
 
     /**
@@ -167,7 +167,42 @@ class Admin {
                 message: '添加管理员成功'
             })
         } catch (error) {
-            res.send(error)
+            res.json({
+                code: 0,
+                message: error
+            })
+        }
+    }
+
+    async remove(req, res, next){
+        console.log(req.query.id);
+        
+        try {
+            var rows = await AdminModel.destroy({
+                where: {
+                    id: req.query.id
+                },
+                force: true
+            })
+
+            if(rows > 0){
+                await AdminThemeModel.destroy({
+                    where: {
+                        admin_id: req.query.id,
+                        theme_id: req.query.theme_id
+                    },
+                    force: true
+                })
+                res.json({
+                    code: 1,
+                    message: '删除成功'
+                })
+            }
+        } catch (error) {
+            res.json({
+                code: 0,
+                message: error
+            })
         }
     }
 
@@ -189,6 +224,37 @@ class Admin {
             code: 1,
             data: data ? data.admins : data
         })
+    }
+
+    /**
+     * 查询某个管理员所属角色
+     */
+    async listRole(req, res, next){
+        try {
+            var data = await AdminModel.findOne({
+                where: {
+                    id: req.query.id
+                },
+                include: [
+                    {
+                        model: RoleModel,
+                        required: false,
+                        where: {
+                            theme_id: req.query.theme_id
+                        }
+                    }
+                ]
+            })
+            res.json({
+                code: 1,
+                data: data.roles
+            })
+        } catch (error) {
+            res.json({
+                code: 0,
+                data: error
+            }) 
+        }
     }
 
     /**

@@ -4,7 +4,9 @@ var Validator = require('../../validators/role')
 var Controller = require('../../controllers/admin/role')
 
 router.get('/list', Validator.list, Controller.list)
-router.post('/add', Validator.add, Controller.add)
+router.get('/listResources', Validator.checkRoleId, Controller.listResources)
+router.get('/listUser', Validator.checkRoleId, Controller.listUser)
+router.post('/addOrUpdate', Validator.add, Controller.addOrUpdate)
 router.post('/assignToUser', Validator.assignRoleToUser, Controller.assignRoleToUser)
 router.post('/assignToAdmin', Validator.assignRoleToAdmin, Controller.assignRoleToAdmin)
 

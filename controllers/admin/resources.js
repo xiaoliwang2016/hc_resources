@@ -19,7 +19,9 @@ class ResourcesController{
             order: [["resources_order", "DESC"]],
             raw: true
         }).then(list => {
-            list = build_tree(list, 0)
+            if(req.query.tree){
+                list = build_tree(list, 0)
+            }
             res.json({
                 code: 1,
                 data: list
@@ -91,10 +93,7 @@ class ResourcesController{
     async assignResourcesToUser(req, res, next){
         await UserResourcesModel.destroy({
             where: {
-                user_id: req.body.user_id,
-                resources_id: {
-                    [Op.in]: req.body.resources_id
-                }
+                user_id: req.body.user_id
             },
             force: true
         })
@@ -105,7 +104,10 @@ class ResourcesController{
         await UserResourcesModel.bulkCreate(data, {
             fields: ['resources_id', 'user_id']
         })
-        res.send('ok')
+        res.json({
+            code: 1,
+            message: '权限资源给用户成功'
+        })
     } 
 
     /**
@@ -114,10 +116,7 @@ class ResourcesController{
     async assignResourcesToRole(req, res, next){
         await RoleResourcesModel.destroy({
             where: {
-                role_id: req.body.role_id,
-                resources_id: {
-                    [Op.in]: req.body.resources_id
-                }
+                role_id: req.body.role_id
             },
             force: true
         })
@@ -130,7 +129,7 @@ class ResourcesController{
         })
         res.send({
             code: 1,
-            message: '分配角色权限成功'
+            message: '分配资源给角色成功'
         })
     }
 

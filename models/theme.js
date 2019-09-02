@@ -16,8 +16,8 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(50),
 			allowNull: true
 		},
-		manager_id: {
-			type: DataTypes.INTEGER(11),
+		manager: {
+			type: DataTypes.STRING(50),
 			allowNull: false
 		},
 		status: {

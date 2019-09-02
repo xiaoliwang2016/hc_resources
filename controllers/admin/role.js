@@ -2,8 +2,10 @@ var sequelize = require('../../db/mysql').sequelize
 var Op = require('../../db/mysql').Sequelize.Op
 
 var RoleModel = sequelize.import('../../models/role')
+var UserModel = sequelize.import('../../models/user')
 var UserRoleModel = sequelize.import('../../models/user_role')
 var AdminRoleModel = sequelize.import('../../models/admin_role')
+var ResourcesModel = sequelize.import('../../models/resources')
 
 class RoleController{
 
@@ -23,30 +25,69 @@ class RoleController{
         })
     }
 
-    add(req, res, next){
-        RoleModel.findOrCreate({
-            where: {
-                role_name: req.body.role_name,
-                role_group: req.body.role_group
-            },
-            defaults: req.body
-        }).then(([instance, created]) => {
+    addOrUpdate(req, res, next){
+        RoleModel.upsert({
+            ...req.body
+        }).then(created => {
             res.json({
                 code: 1,
-                data: instance
+                message: created ? '创建成功' : '更新成功'
             })
         })
     }
+
+    /**
+     * 获取某个角色下所有资源
+     */
+    listResources(req, res, next){
+        RoleModel.findOne({
+            where: {
+                id: req.query.role_id
+            },
+            include: [
+                {
+                    model: ResourcesModel,
+                    required: false,
+                    attributes: ['id','menu_title','type']
+                }
+            ]
+        }).then(list => {
+            res.json({
+                code: 1,
+                data: list.resources
+            })
+        })
+    }
+
+    /**
+     * 查询某个角色下所有的用户
+     */
+    listUser(req, res, next){
+        RoleModel.findOne({
+            where: {
+                id: req.query.role_id
+            },
+            include: [
+                {
+                    model: UserModel,
+                    required: false
+                }
+            ]
+        }).then(list => {
+            res.json({
+                code: 1,
+                data: list.resources
+            })
+        })
+    }
+
     /**
      * 给前台用户分配前台角色
      */
     async assignRoleToUser(req, res, next){
         await UserRoleModel.destroy({
             where: {
-                user_id: req.body.user_id,
-                role_id: {
-                    [Op.in]: req.body.role_id
-                }
+                user_id: req.body.user_id
             },
             force: true
         })
@@ -68,10 +109,7 @@ class RoleController{
     async assignRoleToAdmin(req, res, next){
         await AdminRoleModel.destroy({
             where: {
-                admin_id: req.body.admin_id,
-                role_id: {
-                    [Op.in]: req.body.role_id
-                }
+                admin_id: req.body.admin_id
             },
             force: true
         })

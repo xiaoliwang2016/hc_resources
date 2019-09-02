@@ -53,6 +53,12 @@ class UserValidator {
         ])(req, res, next)
     }
 
+    checkRoleId(req, res, next){
+        return validate([
+            query('role_id').exists().withMessage('role_id不能为空')
+        ])(req, res, next)
+    }
+
 }
 
 module.exports = new UserValidator()
