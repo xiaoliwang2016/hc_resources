@@ -12,7 +12,8 @@ var AdminThemeModel = sequelize.import('../../models/admin_theme')
 class Admin {
 
     /**
-     * 登录
+     * 登录到某个租户管理后台
+     * 参数：工号，密码，租户ID
      */
     async login(req, res, next){
         var user = await AdminModel.findOne({
@@ -36,6 +37,14 @@ class Admin {
             })
         }
 
+        if(user.super == 1){
+            req.session.isSuper = true
+            return res.json({
+                code: 1,
+                data: user
+            })
+        }
+
         if(user.themes.length == 0){
             return res.json({
                 code: 0,
@@ -44,8 +53,6 @@ class Admin {
         }
 
         user = user.toJSON()
-        req.session.isSuper = Boolean(user.super)
-
         //获取该管理员可以访问权限地址，保存在session中，以便做权限校验
         var accesses = await this.__getAccessByThemeAdmin(1, user.id), accessMap = []
         accesses.map(item => {
@@ -55,7 +62,8 @@ class Admin {
         user.accesses = accesses
         res.json({
             code: 1,
-            data: user
+            data: user,
+            accesses
         })
     }
 
@@ -269,6 +277,37 @@ class Admin {
         res.json({
             code: 1,
             message: affectedCount > 0 ? '更新成功' : '更新失败'
+        })
+    }
+
+    /**
+     * 获取该管理员所属的租户列表
+     */
+    async getThemeList(req, res, next){
+        var adminInfo = await AdminModel.findOne({
+            where: {
+                id: req.query.id
+            }
+        })
+        if(adminInfo.super){
+            var themeInfo = await ThemeModel.findAll()
+        }else{
+            var themeInfo = await AdminModel.findOne({
+                where: {
+                    id: req.query.id
+                },
+                include: [
+                    {
+                        model: ThemeModel,
+                        required: false
+                    }
+                ]
+            })
+            themeInfo = themeInfo.themes
+        }
+        res.json({
+            code: 1,
+            data: themeInfo
         })
     }
 

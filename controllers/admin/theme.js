@@ -9,20 +9,20 @@ class ThemeController{
     /**
      * 添加主题，超级管理员才有权限进行此行为
      */
-    add(req, res, next){
+    addOrUpdate(req, res, next){
         if(!req.session.isSuper){
             return res.json({
                 code: 0,
                 message: '只有超级管理员才能进行此操作'
             })
         }
-        ThemeModel.findOrCreate({
-            where: {
-                theme_name: req.body.theme_name
-            },
-            defaults: req.body
-        }).then(([instance, created]) => {
-            res.json(instance)
+        ThemeModel.upsert({
+            ...req.body
+        }).then(created => {
+            res.json({
+                code: 1,
+                message: created ? '创建成功' : '更新成功'
+            })
         })
     }
 
@@ -71,7 +71,12 @@ class ThemeController{
      * 编辑租户，超级管理员才有权限进行此行为
      */
     edit(){
-
+        if(!req.session.isSuper){
+            return res.json({
+                code: 0,
+                message: '只有超级管理员才能进行此操作'
+            })
+        }
     }
 
 }

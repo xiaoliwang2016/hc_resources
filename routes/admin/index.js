@@ -5,6 +5,7 @@ var RoleRouter = require('./role')
 var ThemeRouter = require('./theme')
 var AdminRouter = require('./admin')
 var AccessRouter = require('./access')
+var EmployeeRouter = require('./employee')
 
 
 module.exports = app => {
@@ -15,4 +16,5 @@ module.exports = app => {
     app.use('/admin/admin', AdminRouter)
     app.use('/admin/theme', ThemeRouter)
     app.use('/admin/access', AccessRouter)
+    app.use('/admin/employee', EmployeeRouter)
 }

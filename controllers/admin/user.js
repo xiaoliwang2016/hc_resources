@@ -8,6 +8,7 @@ var UserThemeModel = sequelize.import('../../models/user_theme')
 var ThemeModel = sequelize.import('../../models/theme')
 var ResourcesModel = sequelize.import('../../models/resources')
 var RoleModel = sequelize.import('../../models/role')
+var EmployeeModel = sequelize.import('../../models/employee')
 
 class User{
 
@@ -38,31 +39,46 @@ class User{
     /**
      * 查询某个用户在某个主题下拥有的所有资源ID
      */
-    listResources(req, res, next){
-        UserModel.findOne({
+    async listResources(req, res, next){
+        var data,
+        user = await UserModel.findOne({
             where: {
                 id: req.query.id
-            },
-            include: [
-                {
-                    model: ResourcesModel,
-                    required: false,
-                    where: {
-                        theme_id: req.query.theme_id
-                    }
-                }
-            ]
-        }).then(list => {
-            var data = list.toJSON()
-            data = data.resources
-            if(req.query.tree){
-                data = build_tree(data, 0)
             }
-            res.json({
-                code: 1,
-                data
-            })
         })
+        //管理员该主题下所有地址
+        if(user.admin == 1){
+            var list = await ResourcesModel.findAll({
+                where: {
+                    theme_id: req.query.theme_id
+                }
+            })
+            data = list.map(item => item.toJSON())
+        }else{
+            var list = await UserModel.findOne({
+                where: {
+                    id: req.query.id
+                },
+                include: [
+                    {
+                        model: ResourcesModel,
+                        required: false,
+                        where: {
+                            theme_id: req.query.theme_id
+                        }
+                    }
+                ]
+            })
+            data = list.toJSON().resources
+        }
+        if(req.query.tree){
+            data = build_tree(data, 0)
+        }
+        res.json({
+            code: 1,
+            data
+        })
+        
     }
     /**
      * 查询某个用户拥有角色ID
@@ -104,14 +120,16 @@ class User{
                 },
                 defaults: req.body
             })
-            if(created){
-                await UserThemeModel.findOrCreate({
-                    where: {
-                        user_id: instance.id,
-                        theme_id: req.body.theme_id
-                    }
-                })
-            }
+            await UserThemeModel.findOrCreate({
+                where: {
+                    user_id: instance.id,
+                    theme_id: req.body.theme_id
+                },
+                defaults: {
+                    user_id: instance.id,
+                    theme_id: req.body.theme_id
+                }
+            })
             res.json({
                 code: 1,
                 message: '创建前台用户成功'

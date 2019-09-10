@@ -9,12 +9,32 @@ module.exports = function(sequelize, DataTypes) {
 			autoIncrement: true
 		},
 		user_no: {
-			type: DataTypes.INTEGER(11),
+			type: DataTypes.CHAR(8),
 			allowNull: false
 		},
 		user_name: {
 			type: DataTypes.STRING(100),
 			allowNull: false
+		},
+		department_desc: {
+			type: DataTypes.STRING(50),
+			allowNull: true
+		},
+		company: {
+			type: DataTypes.STRING(50),
+			allowNull: true
+		},
+		company_desc: {
+			type: DataTypes.STRING(50),
+			allowNull: true
+		},
+		job: {
+			type: DataTypes.STRING(50),
+			allowNull: true
+		},
+		job_desc: {
+			type: DataTypes.STRING(50),
+			allowNull: true
 		},
 		email: {
 			type: DataTypes.STRING(100),

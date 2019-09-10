@@ -70,7 +70,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: '0'
 		},
 		verify_id: {
-			type: DataTypes.INTEGER(11),
+			type: DataTypes.STRING(30),
 			allowNull: true
 		},
 		remark: {
