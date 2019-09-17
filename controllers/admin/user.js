@@ -8,7 +8,7 @@ var UserThemeModel = sequelize.import('../../models/user_theme')
 var ThemeModel = sequelize.import('../../models/theme')
 var ResourcesModel = sequelize.import('../../models/resources')
 var RoleModel = sequelize.import('../../models/role')
-var EmployeeModel = sequelize.import('../../models/employee')
+var LinkModel = sequelize.import('../../models/link')
 
 class User{
 
@@ -26,7 +26,8 @@ class User{
             },
             include: [
                 {
-                    model: UserModel
+                    model: UserModel,
+                    required: false
                 }
             ]
         })
@@ -51,7 +52,13 @@ class User{
             var list = await ResourcesModel.findAll({
                 where: {
                     theme_id: req.query.theme_id
-                }
+                },
+                order: [["resources_order", "DESC"]],
+                include: [
+                    {
+                        model: LinkModel
+                    }
+                ]
             })
             data = list.map(item => item.toJSON())
         }else{
@@ -65,11 +72,17 @@ class User{
                         required: false,
                         where: {
                             theme_id: req.query.theme_id
-                        }
+                        },
+                        include: [
+                            {
+                                model: LinkModel
+                            }
+                        ]
                     }
                 ]
             })
-            data = list.toJSON().resources
+            list = list.toJSON().resources
+            data = list.sort((a, b) => (b.resources_order - a.resources_order))
         }
         if(req.query.tree){
             data = build_tree(data, 0)

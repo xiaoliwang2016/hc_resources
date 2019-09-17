@@ -3,6 +3,8 @@ var Op = require('../../db/mysql').Sequelize.Op
 
 var ThemeModel = sequelize.import('../../models/theme')
 var UserThemeModel = sequelize.import('../../models/user_theme')
+var ResourcesModel = sequelize.import('../../models/resources')
+var LinkModel = sequelize.import('../../models/link')
 
 class ThemeController{
 
@@ -10,12 +12,12 @@ class ThemeController{
      * 添加主题，超级管理员才有权限进行此行为
      */
     addOrUpdate(req, res, next){
-        if(!req.session.isSuper){
-            return res.json({
-                code: 0,
-                message: '只有超级管理员才能进行此操作'
-            })
-        }
+        // if(!req.session.isSuper){
+        //     return res.json({
+        //         code: 0,
+        //         message: '只有超级管理员才能进行此操作'
+        //     })
+        // }
         ThemeModel.upsert({
             ...req.body
         }).then(created => {
@@ -78,7 +80,28 @@ class ThemeController{
             })
         }
     }
-
+    /**
+     * 获取主题首页信息
+     */
+    getHomeInfo(req, res, next){
+        ResourcesModel.findOne({
+            where: {
+                theme_id: req.query.theme_id,
+                pid: -1
+            },
+            include: [
+                {
+                    model: LinkModel,
+                    required: false
+                }
+            ]
+        }).then(data => {
+            res.json({
+                code: 1,
+                data
+            })
+        })
+    }
 }
 
 module.exports = new ThemeController()

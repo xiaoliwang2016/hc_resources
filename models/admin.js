@@ -40,10 +40,6 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(100),
 			allowNull: true
 		},
-		password: {
-			type: DataTypes.CHAR(32),
-			allowNull: true
-		},
 		department: {
 			type: DataTypes.STRING(50),
 			allowNull: true

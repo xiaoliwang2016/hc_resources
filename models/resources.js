@@ -20,58 +20,33 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(50),
 			allowNull: false
 		},
-		url: {
-			type: DataTypes.STRING(250),
-			allowNull: true
-		},
-		back_url: {
-			type: DataTypes.STRING(250),
-			allowNull: true
-		},
 		type: {
 			type: DataTypes.INTEGER(6),
 			allowNull: false
 		},
 		status: {
 			type: DataTypes.INTEGER(1),
-			allowNull: false,
+			allowNull: true,
 			defaultValue: '1'
 		},
 		public: {
 			type: DataTypes.INTEGER(1),
-			allowNull: false,
+			allowNull: true,
 			defaultValue: '0'
 		},
 		user_id: {
 			type: DataTypes.INTEGER(11),
-			allowNull: false
+			allowNull: true
 		},
 		resources_order: {
 			type: DataTypes.INTEGER(6),
-			allowNull: false,
+			allowNull: true,
 			defaultValue: '0'
 		},
 		open_type: {
 			type: DataTypes.INTEGER(11),
-			allowNull: false,
+			allowNull: true,
 			defaultValue: '0'
-		},
-		origin: {
-			type: DataTypes.STRING(50),
-			allowNull: true
-		},
-		back_origin: {
-			type: DataTypes.STRING(30),
-			allowNull: true
-		},
-		verify: {
-			type: DataTypes.INTEGER(4),
-			allowNull: false,
-			defaultValue: '0'
-		},
-		verify_id: {
-			type: DataTypes.STRING(30),
-			allowNull: true
 		},
 		remark: {
 			type: DataTypes.STRING(50),

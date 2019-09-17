@@ -28,6 +28,7 @@ var AccessModel = sequelize.import('../models/access')
 var AdminAccessModel = sequelize.import('../models/admin_access')
 var RoleAccessModel = sequelize.import('../models/role_access')
 var AdminRoleModel = sequelize.import('../models/admin_role')
+var LinkModel = sequelize.import('../models/link')
 
 UserModel.belongsToMany(RoleModel, {
     through:{
@@ -172,6 +173,14 @@ AdminModel.belongsToMany(RoleModel, {
     foreignKey: 'admin_id',
     constraints: false
 })
+
+ResourcesModel.hasMany(LinkModel, {
+    foreignKey:'resources_id', sourceKey:'id', constraints: false
+})
+
+// LinkModel.belongsTo(ResourcesModel, {
+//     foreignKey:'resources_id', targetKey:'id', as: 'Resources'
+// })
 
 
 async function init(){

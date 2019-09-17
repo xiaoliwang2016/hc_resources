@@ -1,6 +1,5 @@
 var sequelize = require('../../db/mysql').sequelize
 var Op = require('../../db/mysql').Sequelize.Op
-var md5 = require('md5')
 var { removeDuplicateViaId } = require('../../utils/util')
 
 var AdminModel = sequelize.import('../../models/admin')
@@ -18,8 +17,7 @@ class Admin {
     async login(req, res, next){
         var user = await AdminModel.findOne({
             where: {
-                user_no: req.body.user_no,
-                password: md5(req.body.password)
+                user_no: req.body.user_no
             },
             include: {
                 model: ThemeModel,
@@ -33,7 +31,7 @@ class Admin {
         if(!(user)){
             return res.json({
                 code: 0,
-                message: "账号密码不正确，请重新输入"
+                message: "找不到该用户!"
             })
         }
 
@@ -54,7 +52,7 @@ class Admin {
 
         user = user.toJSON()
         //获取该管理员可以访问权限地址，保存在session中，以便做权限校验
-        var accesses = await this.__getAccessByThemeAdmin(1, user.id), accessMap = []
+        var accesses = await this.__getAccessByThemeAdmin(req.body.theme_id, user.id), accessMap = []
         accesses.map(item => {
             accessMap.push(item.url)
         })
@@ -152,7 +150,6 @@ class Admin {
      */
     async addAdminToTheme(req, res, next){
         var data = req.body
-        data.password = data.password ? md5(data.password) : ''
         try {
             var [instance, created] = await AdminModel.findOrCreate({
                 where: {

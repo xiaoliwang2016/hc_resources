@@ -5,70 +5,84 @@ var { build_tree } = require('../../utils/util')
 var ResourcesModel = sequelize.import('../../models/resources')
 var UserResourcesModel = sequelize.import('../../models/user_resources')
 var RoleResourcesModel = sequelize.import('../../models/role_resources')
+var LinkModel = sequelize.import('../../models/link')
 
 class ResourcesController{
 
     /**
      * 树状展示
      */
-    list(req, res, next){
-        ResourcesModel.findAll({
+    async list(req, res, next){
+        var Resources = await ResourcesModel.findAll({
             where: {
                 theme_id: req.query.theme_id
             },
             order: [["resources_order", "DESC"]],
-            raw: true
-        }).then(list => {
-            if(req.query.tree){
-                list = build_tree(list, 0)
-            }
-            res.json({
-                code: 1,
-                data: list
-            })
+            include: [
+                {
+                    model: LinkModel,
+                    required: false
+                }
+            ]
+        })
+        Resources = Resources.map(item => (item.toJSON()))
+        if(req.query.tree){
+            Resources = build_tree(Resources, 0)
+        }
+        res.json({
+            code: 1,
+            data: Resources
         })
     }
 
     /**
-     * 增加链接
+     * 创建/更新
      */
-    add(req, res, next){
-        ResourcesModel.findOrCreate({
-            where: {
-                pid: req.body.pid,
-                theme_id: req.body.theme_id,
-                menu_title: req.body.menu_title
-            },
-            defaults: req.body
-        }).then(([instance, created]) => {
-            if(created){
-                res.json({
-                    code: 1,
-                    data: instance
+    async addOrUpdate(req, res, next){
+        var resources_id
+        if(req.body.id){
+            try {
+                resources_id = req.body.id
+                await LinkModel.destroy({
+                    where: { resources_id: req.body.id },
+                    force: true
                 })
-            }else{
+                await ResourcesModel.update(req.body, {
+                    where: { id: req.body.id }
+                })
+            } catch (error) {
                 res.json({
                     code: 0,
-                    message: '该标题已创建'
+                    message: error
                 })
             }
+        }else{
+            try {
+                const instance = await ResourcesModel.create({
+                    ...req.body
+                })
+                resources_id = instance.id
+            } catch (error) {
+                res.json({
+                    code: 0,
+                    message: error
+                })
+            }
+        }
+        if(req.body.links.length > 0){
+            req.body.links.map((link, index) => {
+                req.body.links[index].resources_id = resources_id
+            })
+            await LinkModel.bulkCreate(req.body.links)
+        }
+        res.json({
+            code: 1,
+            message: '操作成功'
         })
     }
 
-    /**
-     * 编辑
-     */
-    edit(req, res, next){
-        ResourcesModel.update(req.body, {
-            where: {
-                id: req.body.id
-            }
-        }).then(([affectedCount, affectedRows]) => {
-            res.json({
-                code: 1,
-                message: '更新成功'
-            })
-        })
+    deleteLink(){
+
     }
 
     /**

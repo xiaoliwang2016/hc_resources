@@ -21,6 +21,12 @@ class ThemeValidator {
         ])(req, res, next)
     }
 
+    checkThemeId(req, res, next){
+        return validate([
+            query('theme_id').isInt().withMessage('theme_id不能为空')
+        ])(req, res, next)
+    }
+
     addUser(req, res, next){
         return validate([
             body('theme_id').custom(value => {
