@@ -41,14 +41,9 @@ class User{
      * 查询某个用户在某个主题下拥有的所有资源ID
      */
     async listResources(req, res, next){
-        var data,
-        user = await UserModel.findOne({
-            where: {
-                id: req.query.id
-            }
-        })
-        //管理员该主题下所有地址
-        if(user.admin == 1){
+        var data
+        //房主&超管可以查看该主题所有资源
+        if(req.query.isOwner == 1){
             var list = await ResourcesModel.findAll({
                 where: {
                     theme_id: req.query.theme_id
@@ -64,7 +59,7 @@ class User{
         }else{
             var list = await UserModel.findOne({
                 where: {
-                    id: req.query.id
+                    id: req.query.user_id
                 },
                 include: [
                     {
@@ -91,7 +86,6 @@ class User{
             code: 1,
             data
         })
-        
     }
     /**
      * 查询某个用户拥有角色ID

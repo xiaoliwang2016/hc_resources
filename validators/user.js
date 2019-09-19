@@ -1,7 +1,8 @@
 const validate = require('./errorHandler')
 const { body, query } = require('express-validator')
+const Base = require('./base')
 
-class UserValidator {
+class UserValidator extends Base {
 
     login(req, res, next){
         return validate([
@@ -30,17 +31,6 @@ class UserValidator {
         ])(req, res, next)
     }
 
-    checkThemeId(req, res, next){
-        return validate([
-            query('theme_id').exists().withMessage('theme_id不能为空')
-        ])(req, res, next)
-    }
-
-    checkId(req, res, next){
-        return validate([
-            query('id').exists().withMessage('id不能为空')
-        ])(req, res, next) 
-    }
 
     checkUserNo(req, res, next){
         return validate([

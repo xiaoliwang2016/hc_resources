@@ -25,8 +25,7 @@ class UserController{
                 include: [
                     {
                         model: ThemeModel,
-                        required: false,
-                        attributes: ['theme_name', 'id']
+                        required: false
                     }
                 ]
             })
