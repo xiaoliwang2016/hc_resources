@@ -37,6 +37,12 @@ class Admin {
 
         if(user.super == 1){
             req.session.isSuper = true
+            user = user.toJSON()
+            user.themes = await ThemeModel.findAll({
+                where: {
+                    id: req.body.theme_id
+                }
+            })
             return res.json({
                 code: 1,
                 data: user
