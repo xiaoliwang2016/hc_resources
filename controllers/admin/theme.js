@@ -80,6 +80,10 @@ class ThemeController{
             where: {
                 admin_id: admin.id,
                 theme_id
+            },
+            defaults: {
+                admin_id: admin.id,
+                theme_id
             }
         })
 

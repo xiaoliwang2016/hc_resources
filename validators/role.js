@@ -1,11 +1,12 @@
 const validate = require('./errorHandler')
-const { body, query } = require('express-validator')
+const { body, query, check } = require('express-validator')
 var sequelize = require('../db/mysql').sequelize
+var Base = require('./base')
 
 var UserModel = sequelize.import('../models/user')
 var AdminModel = sequelize.import('../models/admin')
 
-class UserValidator {
+class UserValidator extends Base{
 
     assignRoleToUser(req, res, next){
         return validate([
@@ -46,17 +47,16 @@ class UserValidator {
         ])(req, res, next)
     }
 
-    list(req, res, next){
+    checkRoleId(req, res, next){
         return validate([
-            query('theme_id').exists().withMessage('theme_id不能为空'),
-            query('role_group').isIn(['1', '0']).withMessage('0：前台角色， 1：后台角色'),
+            check('role_id').exists().withMessage('role_id不能为空')
         ])(req, res, next)
     }
 
-    checkRoleId(req, res, next){
+    checkGroupId(req, res, next){
         return validate([
-            query('role_id').exists().withMessage('role_id不能为空')
-        ])(req, res, next)
+            check('role_group').isIn(['1', '0']).withMessage('0：前台角色， 1：后台角色')
+        ])(req, res, next)  
     }
 
 }
