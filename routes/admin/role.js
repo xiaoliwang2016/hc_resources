@@ -7,6 +7,7 @@ router.get('/list', Validator.checkThemeId, Validator.checkGroupId, Controller.l
 router.get('/listResources', Validator.checkRoleId, Controller.listResources)
 router.get('/listUser', Validator.checkRoleId, Controller.listUser)
 router.post('/addOrUpdate', Validator.add, Controller.addOrUpdate)
+router.post('/delete', Validator.checkRoleId, Controller.delete)
 router.post('/assignToUser', Validator.assignRoleToUser, Controller.assignRoleToUser)
 router.post('/assignToAdmin', Validator.assignRoleToAdmin, Controller.assignRoleToAdmin)
 

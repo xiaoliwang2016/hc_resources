@@ -168,6 +168,24 @@ class User{
         })
     }
 
+    /**
+     * 删除
+     */
+    delete(req, res, next){
+        UserThemeModel.destroy({
+            where: {
+                user_id: req.body.user_id,
+                theme_id: req.body.theme_id
+            },
+            force: true
+        }).then(() => {
+            res.json({
+                code: 1,
+                message: '删除成功'
+            })
+        })
+    }
+
 }
 
 module.exports = new User()

@@ -9,5 +9,6 @@ router.get('/listResources', Validator.checkUserId, Validator.checkThemeId, Cont
 router.get('/listRole', Validator.checkId, Controller.listRole)
 router.post('/add', Validator.add, Controller.addUserToTheme)
 router.post('/update', Validator.edit, Controller.edit)
+router.post('/delete', Validator.checkUserId, Validator.checkThemeId, Controller.delete)
 
 module.exports = router;

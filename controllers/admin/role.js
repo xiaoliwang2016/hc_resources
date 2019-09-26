@@ -36,6 +36,30 @@ class RoleController{
         })
     }
 
+    async delete(req, res, next){
+        var data = await UserRoleModel.findAll({
+            where: {
+                role_id: req.body.role_id
+            }
+        })
+        if(data.length > 0){
+            return res.json({
+                code: 0,
+                message: '改角色下尚有用户，请重新操作'
+            })
+        }
+        await RoleModel.destroy({
+            where: {
+                id: req.body.role_id
+            },
+            force: true
+        })
+        res.json({
+            code: 1,
+            message: '删除成功'
+        })
+    }
+
     /**
      * 获取某个角色下所有资源
      */
