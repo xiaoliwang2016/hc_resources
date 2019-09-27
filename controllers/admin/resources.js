@@ -35,6 +35,24 @@ class ResourcesController{
         })
     }
 
+    async getDetail(req, res, next){
+        var Resources = await ResourcesModel.findOne({
+            where: {
+                id: req.query.id
+            },
+            include: [
+                {
+                    model: LinkModel,
+                    required: false
+                }
+            ]
+        })
+        res.json({
+            code: 1,
+            data: Resources
+        })
+    }
+
     /**
      * 创建/更新
      */

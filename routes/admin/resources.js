@@ -4,6 +4,7 @@ var Validator = require('../../validators/resources')
 var Controller = require('../../controllers/admin/resources')
 
 router.get('/list', Validator.list, Controller.list)
+router.get('/detail', Validator.checkId, Controller.getDetail)
 router.post('/addOrUpdate', Validator.add, Controller.addOrUpdate)
 router.post('/deleteLink', Validator.checkId, Controller.deleteLink)
 router.post('/delete', Validator.edit, Controller.delete)

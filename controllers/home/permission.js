@@ -34,11 +34,12 @@ class PermissionController{
 
         var data = user.toJSON()
 
+        //非管理员默认返回所属的第一个主题
         if(user.admin == 1){
             data.themes = await ThemeModel.findAll()
             var resources = await ResourcesModel.findAll({
                 where: {
-                    theme_id: data.themes[0].id
+                    theme_id: req.body.theme_id ? req.body.theme_id : data.themes[0].id
                 }
             })
         }else{
@@ -49,8 +50,9 @@ class PermissionController{
                     message: "该用户没有分配主题,请联系管理员"
                 })
             }
+
             //查出该用户对应主题信息，默认取一个主题
-            var defaultThemeID = data.themes[0].id
+            var defaultThemeID = req.body.theme_id ? req.body.theme_id : data.themes[0].id
             var resources = await this.getResourcesByThemeUser(user.id, defaultThemeID)
         }
         

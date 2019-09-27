@@ -1,6 +1,6 @@
 var sequelize = require('../db/mysql').sequelize
 const validate = require('./errorHandler')
-const { body, query } = require('express-validator')
+const { body, check } = require('express-validator')
 
 var UserModel = sequelize.import('../models/user')
 var RoleModel = sequelize.import('../models/role')
@@ -9,13 +9,13 @@ class ResourcesValidator {
 
     checkId(req, res, next){
         return validate([
-            query('id').exists().withMessage('ID不能为空，字段：theme_id')
+            check('id').exists().withMessage('ID不能为空，字段：id')
         ])(req, res, next)
     }
 
     list(req, res, next){
         return validate([
-            query('theme_id').exists().withMessage('主题ID不能为空，字段：theme_id')
+            check('theme_id').exists().withMessage('主题ID不能为空，字段：theme_id')
         ])(req, res, next)
     }
 
