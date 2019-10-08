@@ -39,7 +39,7 @@ class PermissionController{
             data.themes = await ThemeModel.findAll()
             var resources = await ResourcesModel.findAll({
                 where: {
-                    theme_id: req.body.theme_id ? req.body.theme_id : data.themes[0].id
+                    theme_id: req.body.theme_id || data.themes[0].id
                 }
             })
         }else{
@@ -50,12 +50,18 @@ class PermissionController{
                     message: "该用户没有分配主题,请联系管理员"
                 })
             }
-
             //查出该用户对应主题信息，默认取一个主题
-            var defaultThemeID = req.body.theme_id ? req.body.theme_id : data.themes[0].id
+            var defaultThemeID = req.body.theme_id || data.themes[0].id
             var resources = await this.getResourcesByThemeUser(user.id, defaultThemeID)
         }
-        
+
+        if(!(resources && resources.length > 0)){
+            res.json({
+                code: 0,
+                message: "该用户在当前租户没有访问权限,请联系管理员"
+            })
+        }
+
         data.resources = build_tree(resources, 0)
 
         res.json({
@@ -99,7 +105,6 @@ class PermissionController{
      */
     getResourcesByThemeUser(user_id, theme_id){
         var resources = []
-
         return new Promise(async (resolve, reject) => {
             //获取该用户的权限，放入 resources 中
             var userData = await UserModel.findOne({
@@ -125,40 +130,40 @@ class PermissionController{
                 resources = resources.concat(userData.resources)
             }
             //获取该用户对应角色的所有权限，放入 resources 中
-            var roleData = await UserModel.findOne({
-                where: {
-                    id: user_id
-                },
-                include: [
-                    {
-                        model: RoleModel,
-                        required: false,
-                        where: {
-                            // theme_id,
-                            status: 1
-                        },
-                        attributes: {
-                            exclude: ['update_time', 'status']
-                        },
-                        include: [
-                            {
-                                model: ResourcesModel,
-                                required: false,
-                                attributes: {
-                                    exclude: ['update_time', 'status', "user_id", "public", "type"]
-                                },
-                                order: ['resources_order', 'DESC']
-                            }
-                        ]
-                    },
-                ]
-            })
-            roleData = roleData.toJSON()
-            if(roleData != null){
-                roleData.roles.forEach(role => {
-                    resources = resources.concat(role.resources)
-                })
-            }
+            // var roleData = await UserModel.findOne({
+            //     where: {
+            //         id: user_id
+            //     },
+            //     include: [
+            //         {
+            //             model: RoleModel,
+            //             required: false,
+            //             where: {
+            //                 theme_id,
+            //                 status: 1
+            //             },
+            //             attributes: {
+            //                 exclude: ['update_time', 'status']
+            //             },
+            //             include: [
+            //                 {
+            //                     model: ResourcesModel,
+            //                     required: false,
+            //                     attributes: {
+            //                         exclude: ['update_time', 'status', "user_id", "public", "type"]
+            //                     },
+            //                     order: ['resources_order', 'DESC']
+            //                 }
+            //             ]
+            //         },
+            //     ]
+            // })
+            // roleData = roleData.toJSON()
+            // if(roleData != null){
+            //     roleData.roles.forEach(role => {
+            //         resources = resources.concat(role.resources)
+            //     })
+            // }
             resolve(resources)
         })
     }
