@@ -55,7 +55,7 @@ class PermissionController{
             var resources = await this.getResourcesByThemeUser(user.id, defaultThemeID)
         }
 
-        if(!(resources && resources.length > 0)){
+        if(!(resources && resources.length > 0) && req.body.theme_id){
             res.json({
                 code: 0,
                 message: "该用户在当前租户没有访问权限,请联系管理员"
