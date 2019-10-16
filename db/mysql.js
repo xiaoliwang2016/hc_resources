@@ -4,8 +4,8 @@ const config = require('../config/mysql')
 const sequelize = new Sequelize(config.database, config.user, config.pass, {
     host: config.host,
     dialect: config.dialect,
-    operatorsAliases: false,
-    logging: null,
+    operatorsAliases: null,
+    logging: true,
     pool: {
         max: 5,
         min: 0,

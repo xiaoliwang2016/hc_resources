@@ -130,12 +130,13 @@ class ResourcesController{
             fields: ['id']
         }), resourcesIds = []
         resources.map(item => { resourcesIds.push(item.id) })
-
+        console.log(resourcesIds);
+        
         await UserResourcesModel.destroy({
             where: {
                 user_id: req.body.user_id,
                 resources_id: {
-                    $in: resourcesIds
+                    [Op.in]: resourcesIds
                 }
             },
             force: true
