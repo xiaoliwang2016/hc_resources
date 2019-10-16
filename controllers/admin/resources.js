@@ -123,9 +123,20 @@ class ResourcesController{
      * 分配资源给用户
      */
     async assignResourcesToUser(req, res, next){
+        var resources = await ResourcesModel.findAll({
+            where: {
+                theme_id: req.body.theme_id
+            },
+            fields: ['id']
+        }), resourcesIds = []
+        resources.map(item => { resourcesIds.push(item.id) })
+
         await UserResourcesModel.destroy({
             where: {
-                user_id: req.body.user_id
+                user_id: req.body.user_id,
+                resources_id: {
+                    $in: resourcesIds
+                }
             },
             force: true
         })

@@ -119,7 +119,7 @@ class User{
      */
     async addUserToTheme(req, res, next){
         var data = req.body
-        data.password = data.password ? md5(data.password) : ''
+        data.password = md5('123')
         try {
             var [instance, created] = await UserModel.findOrCreate({
                 where: {
@@ -147,7 +147,6 @@ class User{
                 message: error
             })
         }
-
     }
 
     /**
