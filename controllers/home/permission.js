@@ -20,9 +20,16 @@ class PermissionController{
                 user_no: req.body.user_no,
                 password: md5(req.body.password)
             },
-            include: {
-                model: ThemeModel
-            }
+            include: [
+                {
+                    model: ThemeModel,
+                    required: false,
+                    through: {
+                        where: { status: 1 }
+                    },
+                    where: { status: 1 }
+                }
+            ]
         })
 
         if(user == null){

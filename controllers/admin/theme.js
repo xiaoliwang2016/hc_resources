@@ -33,6 +33,13 @@ class ThemeController{
             const theme = await ThemeModel.create(req.body)
             theme_id = theme.id
         }
+        
+        if(!req.body.managerInfo){
+            return res.json({
+                code: 1,
+                message: '更新成功'
+            })
+        }
 
         //把主题的管理员添加为用户
         var data = {

@@ -27,7 +27,10 @@ class User{
             include: [
                 {
                     model: UserModel,
-                    required: false
+                    required: false,
+                    through: {
+                        where: req.query.admin == 1 ? true : { status: 1 }
+                    }
                 }
             ]
         })
@@ -147,6 +150,27 @@ class User{
                 message: error
             })
         }
+    }
+
+    /**
+     * 修改用户在某个主题下的是否启用
+     */
+    async changeUserStatus(req, res, next){
+        console.log(req.body);
+        await UserThemeModel.update(
+            {
+                status: req.body.status
+            }, 
+            {
+            where: {
+                theme_id: req.body.theme_id,
+                user_id: req.body.user_id
+            }
+        })
+        res.json({
+            code: 1,
+            message: '更新成功'
+        })
     }
 
     /**

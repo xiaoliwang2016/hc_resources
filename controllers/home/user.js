@@ -25,7 +25,11 @@ class UserController{
                 include: [
                     {
                         model: ThemeModel,
-                        required: false
+                        required: false,
+                        through: {
+                            where: { status: 1 }
+                        },
+                        where: { status: 1 }
                     }
                 ]
             })
