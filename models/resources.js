@@ -48,6 +48,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true,
 			defaultValue: '0'
 		},
+		delay: {
+			type: DataTypes.INTEGER(11),
+			allowNull: false,
+			defaultValue: '3000'
+		},
 		remark: {
 			type: DataTypes.STRING(50),
 			allowNull: true

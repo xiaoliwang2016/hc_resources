@@ -17,10 +17,14 @@ class Admin {
     async login(req, res, next){
         var user = await AdminModel.findOne({
             where: {
-                user_no: req.body.user_no
+                user_no: req.body.user_no,
+                status: 1
             },
             include: {
                 model: ThemeModel,
+                through: {
+                    where: { status: 1 }
+                },
                 where: {
                     id: req.body.theme_id
                 },
@@ -311,6 +315,26 @@ class Admin {
         res.json({
             code: 1,
             data: themeInfo
+        })
+    }
+
+    /**
+     * 修改管理员在某个主题下的是否启用
+     */
+    async changeAdminStatus(req, res, next){
+        await AdminThemeModel.update(
+            {
+                status: req.body.status
+            }, 
+            {
+            where: {
+                theme_id: req.body.theme_id,
+                admin_id: req.body.admin_id
+            }
+        })
+        res.json({
+            code: 1,
+            message: '更新成功'
         })
     }
 

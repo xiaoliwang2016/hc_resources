@@ -24,6 +24,12 @@ class Base {
         ])(req, res, next) 
     }
 
+    checkAdminId(req, res, next){
+        return validate([
+            check('admin_id').exists().withMessage('admin_id不能为空')
+        ])(req, res, next) 
+    }
+
     checkId(req, res, next){
         return validate([
             check('id').exists().withMessage('id不能为空')
