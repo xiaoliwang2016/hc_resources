@@ -68,8 +68,9 @@ class PermissionController{
                 message: "该用户在当前租户没有访问权限,请联系管理员"
             })
         }
-
         data.resources = build_tree(resources, 0)
+        user.last_login = new Date()
+        await user.save()
 
         res.json({
             code: 1,
