@@ -13,6 +13,7 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'user_resources',
 		timestamps: false,
-		freezeTableName: true
+		freezeTableName: true,
+		underscored: true
 	});
 };

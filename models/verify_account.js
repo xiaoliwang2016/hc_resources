@@ -27,6 +27,7 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'verify_account',
 		timestamps: false,
-		freezeTableName: true
+		freezeTableName: true,
+		underscored: true
 	});
 };

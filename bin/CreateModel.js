@@ -17,7 +17,8 @@ getTables().then(res => {
             freezeTableName: true,
             createdAt: false,
             updatedAt: 'update_time',
-            deletedAt: 'delete_time'
+            deletedAt: 'delete_time',
+            underscored: true
         },
         tables: res.table
     })
@@ -35,7 +36,8 @@ getTables().then(res => {
         port: config.port,
         additional: {
             timestamps: false,
-            freezeTableName: true
+            freezeTableName: true,
+            underscored: true
         },
         tables: res.middle_table
     })

@@ -20,6 +20,7 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'admin_theme',
 		timestamps: false,
-		freezeTableName: true
+		freezeTableName: true,
+		underscored: true
 	});
 };

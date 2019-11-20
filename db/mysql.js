@@ -30,6 +30,7 @@ var AdminAccessModel = sequelize.import('../models/admin_access')
 var RoleAccessModel = sequelize.import('../models/role_access')
 var AdminRoleModel = sequelize.import('../models/admin_role')
 var LinkModel = sequelize.import('../models/link')
+var UserHistoryModel = sequelize.import('../models/user_history')
 
 UserModel.belongsToMany(RoleModel, {
     through:{
@@ -39,7 +40,6 @@ UserModel.belongsToMany(RoleModel, {
     foreignKey: 'user_id',
     constraints: false
 })
-
 RoleModel.belongsToMany(UserModel, {
     through:{
         model: UserRoleModel,
@@ -48,7 +48,6 @@ RoleModel.belongsToMany(UserModel, {
     foreignKey: 'role_id',
     constraints: false
 })
-
 RoleModel.belongsToMany(ResourcesModel, {
     through:{
         model: RoleResourcesModel,
@@ -57,7 +56,6 @@ RoleModel.belongsToMany(ResourcesModel, {
     foreignKey: 'role_id',
     constraints: false
 })
-
 ResourcesModel.belongsToMany(RoleModel, {
     through:{
         model: RoleResourcesModel,
@@ -66,7 +64,6 @@ ResourcesModel.belongsToMany(RoleModel, {
     foreignKey: 'resources_id',
     constraints: false
 })
-
 UserModel.belongsToMany(ResourcesModel, {
     through:{
         model: UserResourcesModel,
@@ -75,7 +72,6 @@ UserModel.belongsToMany(ResourcesModel, {
     foreignKey: 'user_id',
     constraints: false
 })
-
 ResourcesModel.belongsToMany(UserModel, {
     through:{
         model: UserResourcesModel,
@@ -84,7 +80,6 @@ ResourcesModel.belongsToMany(UserModel, {
     foreignKey: 'resources_id',
     constraints: false
 })
-
 ThemeModel.belongsToMany(UserModel, {
     through: {
         model: UserThemeModel,
@@ -93,7 +88,6 @@ ThemeModel.belongsToMany(UserModel, {
     foreignKey: 'theme_id',
     constraints: false
 })
-
 UserModel.belongsToMany(ThemeModel, {
     through: {
         model: UserThemeModel,
@@ -102,7 +96,6 @@ UserModel.belongsToMany(ThemeModel, {
     foreignKey: 'user_id',
     constraints: false
 })
-
 ThemeModel.belongsToMany(AdminModel, {
     through: {
         model: AdminThemeModel,
@@ -111,7 +104,6 @@ ThemeModel.belongsToMany(AdminModel, {
     foreignKey: 'theme_id',
     constraints: false
 })
-
 AdminModel.belongsToMany(ThemeModel, {
     through: {
         model: AdminThemeModel,
@@ -120,7 +112,6 @@ AdminModel.belongsToMany(ThemeModel, {
     foreignKey: 'admin_id',
     constraints: false
 })
-
 AccessModel.belongsToMany(RoleModel, {
     through: {
         model: RoleAccessModel,
@@ -129,7 +120,6 @@ AccessModel.belongsToMany(RoleModel, {
     foreignKey: 'access_id',
     constraints: false
 })
-
 RoleModel.belongsToMany(AccessModel, {
     through: {
         model: RoleAccessModel,
@@ -138,7 +128,6 @@ RoleModel.belongsToMany(AccessModel, {
     foreignKey: 'role_id',
     constraints: false
 })
-
 AccessModel.belongsToMany(AdminModel, {
     through: {
         model: AdminAccessModel,
@@ -147,7 +136,6 @@ AccessModel.belongsToMany(AdminModel, {
     foreignKey: 'access_id',
     constraints: false
 })
-
 AdminModel.belongsToMany(AccessModel, {
     through: {
         model: AdminAccessModel,
@@ -156,7 +144,6 @@ AdminModel.belongsToMany(AccessModel, {
     foreignKey: 'admin_id',
     constraints: false
 })
-
 RoleModel.belongsToMany(AdminModel, {
     through: {
         model: AdminRoleModel,
@@ -165,7 +152,6 @@ RoleModel.belongsToMany(AdminModel, {
     foreignKey: 'role_id',
     constraints: false
 })
-
 AdminModel.belongsToMany(RoleModel, {
     through: {
         model: AdminRoleModel,
@@ -174,9 +160,16 @@ AdminModel.belongsToMany(RoleModel, {
     foreignKey: 'admin_id',
     constraints: false
 })
-
 ResourcesModel.hasMany(LinkModel, {
     foreignKey:'resources_id', sourceKey:'id', constraints: false
+})
+
+UserModel.hasOne(UserHistoryModel)
+UserHistoryModel.belongsTo(UserModel)
+
+ResourcesModel.hasOne(UserHistoryModel)
+UserHistoryModel.belongsTo(ResourcesModel, {
+    foreignKey:'resources_id', sourceKey:'id'
 })
 
 // LinkModel.belongsTo(ResourcesModel, {

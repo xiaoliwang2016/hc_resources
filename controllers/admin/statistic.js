@@ -3,6 +3,7 @@ var Op = require('../../db/mysql').Sequelize.Op
 
 var UserModel = sequelize.import('../../models/user')
 var UserHistoryModel = sequelize.import('../../models/user_history')
+var ResourcesModel = sequelize.import('../../models/resources')
 
 class StatisticController {
     
@@ -16,7 +17,6 @@ class StatisticController {
 
     /**
      * 获取某个主题下过去7日浏览次数
-     * @return Int
      */
     async getViewsViaThemeId(req, res, next){
         var today = new Date().getTime()
@@ -60,6 +60,44 @@ class StatisticController {
                 code: 1,
                 data: result
             })
+        })
+    }
+
+    /**
+     * 获取某个主题下访问记录
+     */
+    async getAccessRecordViaThemeId(req, res, next){
+        var condition = {},
+        pageNo = req.query.pageNo || 1,
+        pageSize = req.query.pageSize || 10
+
+        for (const key in req.query) {
+            if(['user_id', 'theme_id', 'resources_id'].indexOf(key) != -1){
+                condition[key] = req.query[key]
+            }
+        }
+        var records = await UserHistoryModel.findAndCountAll({
+            where: condition,
+            include: [
+                {
+                    model: UserModel,
+                    attributes: ['id', 'user_no', 'user_name']
+                },
+                {
+                    model: ResourcesModel,
+                    attributes: ['id', 'menu_title']
+                }
+            ],
+            attributes: ['theme_id', ['update_time', 'time']],
+            order: [
+                ['update_time', 'DESC']
+            ],
+            offset: (pageNo - 1) * pageSize,
+            limit: pageSize
+        })
+        res.json({
+            code: 1,
+            data: records
         })
     }
 }

@@ -41,6 +41,7 @@ class Base {
             check('status').isIn(['0', '1']).withMessage('status只能为0或者1'),
         ])(req, res, next) 
     }
+    
 }
 
 module.exports = Base

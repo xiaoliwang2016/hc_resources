@@ -32,6 +32,7 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'link',
 		timestamps: false,
-		freezeTableName: true
+		freezeTableName: true,
+		underscored: true
 	});
 };

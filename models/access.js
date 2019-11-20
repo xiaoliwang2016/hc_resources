@@ -32,6 +32,7 @@ module.exports = function(sequelize, DataTypes) {
 		freezeTableName: true,
 		createdAt: false,
 		updatedAt: 'update_time',
-		deletedAt: 'delete_time'
+		deletedAt: 'delete_time',
+		underscored: true
 	});
 };
