@@ -174,7 +174,6 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'employee',
 		timestamps: false,
-		freezeTableName: true,
-		underscored: true
+		freezeTableName: true
 	});
 };
