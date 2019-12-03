@@ -6,6 +6,6 @@ var StatisticController = require('../../controllers/admin/statistic')
 
 router.get('/listTheme', Controller.listTheme)
 router.get('/addHistory', Validator.checkUserId, Validator.checkThemeId, StatisticController.addUserHistory)
-
+router.get('/getUserInfo', Controller.getUserDetail)
 
 module.exports = router

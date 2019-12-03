@@ -11,6 +11,5 @@ router.post('/add', Validator.checkUserNo, Validator.checkThemeId, Controller.ad
 router.post('/update', Validator.checkId, Controller.edit)
 router.post('/changeStatus', Validator.checkThemeId, Validator.checkUserId, Validator.checkStatus, Controller.changeUserStatus)
 router.post('/delete', Validator.checkUserId, Validator.checkThemeId, Controller.delete)
-router.get('/getUserInfo', Controller.getDetailViaUserNo)
 
 module.exports = router;

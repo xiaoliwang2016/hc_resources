@@ -209,19 +209,6 @@ class User{
         })
     }
 
-    /**
-     * 通过工号获取用户信息
-     */
-    async getDetailViaUserNo(req, res, next){
-        var data = await UserModel.findOne({
-            where: req.query
-        })
-        res.json({
-            code: 1,
-            data
-        })
-    }
-
 }
 
 module.exports = new User()

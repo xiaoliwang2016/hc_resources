@@ -6,6 +6,7 @@ const sequelize = new Sequelize(config.database, config.user, config.pass, {
     dialect: config.dialect,
     operatorsAliases: null,
     logging: null,
+    // logging: console.log,
     timezone: '+08:00',
     pool: {
         max: 5,
