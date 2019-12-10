@@ -54,7 +54,8 @@ class User{
                 order: [["resources_order", "DESC"]],
                 include: [
                     {
-                        model: LinkModel
+                        model: LinkModel,
+                        order: ["order"]
                     }
                 ]
             })
@@ -73,7 +74,8 @@ class User{
                         },
                         include: [
                             {
-                                model: LinkModel
+                                model: LinkModel,
+                                order: ["order"]
                             }
                         ]
                     }

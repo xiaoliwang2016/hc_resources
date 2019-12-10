@@ -24,6 +24,11 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(50),
 			allowNull: true
 		},
+		order: {
+			type: DataTypes.INTEGER(11),
+			allowNull: false,
+			defaultValue: '0'
+		},
 		verify: {
 			type: DataTypes.INTEGER(1),
 			allowNull: true,

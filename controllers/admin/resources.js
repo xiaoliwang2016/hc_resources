@@ -89,9 +89,17 @@ class ResourcesController{
         }
         if(req.body.links.length > 0){
             req.body.links.map((link, index) => {
+                req.body.links[index].order = index
                 req.body.links[index].resources_id = resources_id
             })
-            await LinkModel.bulkCreate(req.body.links)
+            try {
+                await LinkModel.bulkCreate(req.body.links)
+            } catch (error) {
+                res.status(500).json({
+                    code: 0,
+                    message: error.original.sqlMessage
+                })
+            }
         }
         res.json({
             code: 1,
@@ -129,9 +137,7 @@ class ResourcesController{
             },
             fields: ['id']
         }), resourcesIds = []
-        resources.map(item => { resourcesIds.push(item.id) })
-        console.log(resourcesIds);
-        
+        resources.map(item => { resourcesIds.push(item.id) })        
         await UserResourcesModel.destroy({
             where: {
                 user_id: req.body.user_id,

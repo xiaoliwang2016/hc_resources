@@ -1,0 +1,6 @@
+::ffff:127.0.0.1 - - [06/Dec/2019:06:55:37 +0000] "GET /admin/user/listTheme?id=1 HTTP/1.1" 404 159
+::ffff:127.0.0.1 - - [06/Dec/2019:07:47:48 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 1091
+::ffff:127.0.0.1 - - [06/Dec/2019:07:49:16 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 10
+::ffff:127.0.0.1 - - [06/Dec/2019:07:50:02 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 1091
+::ffff:127.0.0.1 - - [06/Dec/2019:07:50:36 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 64
+::ffff:127.0.0.1 - - [06/Dec/2019:07:55:00 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 64
