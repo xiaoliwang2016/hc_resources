@@ -52,6 +52,10 @@ class ResourcesController{
                 }
             ]
         })
+        Resources = Resources && Resources.toJSON()
+        Resources && Resources.links.sort((a, b) => {
+            return a.order - b.order
+        })
         res.json({
             code: 1,
             data: Resources
