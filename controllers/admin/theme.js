@@ -168,6 +168,10 @@ class ThemeController{
                 }
             ]
         }).then(data => {
+            data = data && data.toJSON()
+            data && data.links.sort((a, b) => {
+                return a.order - b.order
+            })
             res.json({
                 code: 1,
                 data

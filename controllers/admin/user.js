@@ -55,7 +55,6 @@ class User{
                 include: [
                     {
                         model: LinkModel,
-                        order: ["order"]
                     }
                 ]
             })
@@ -84,6 +83,11 @@ class User{
             list = list.toJSON().resources
             data = list.sort((a, b) => (b.resources_order - a.resources_order))
         }
+        data.map((resources, index) => {
+            resources.links.sort((a, b) => {
+                return a.order - b.order
+            })
+        })
         if(req.query.tree){
             data = build_tree(data, 0)
         }
@@ -158,7 +162,6 @@ class User{
      * 修改用户在某个主题下的是否启用
      */
     async changeUserStatus(req, res, next){
-        console.log(req.body);
         await UserThemeModel.update(
             {
                 status: req.body.status

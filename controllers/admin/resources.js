@@ -26,6 +26,11 @@ class ResourcesController{
             ]
         })
         Resources = Resources.map(item => (item.toJSON()))
+        Resources.map((resources, index) => {
+            resources.links.sort((a, b) => {
+                return a.order - b.order
+            })
+        })
         if(req.query.tree){
             Resources = build_tree(Resources, 0)
         }
