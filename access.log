@@ -4,3 +4,5 @@
 ::ffff:127.0.0.1 - - [06/Dec/2019:07:50:02 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 1091
 ::ffff:127.0.0.1 - - [06/Dec/2019:07:50:36 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 64
 ::ffff:127.0.0.1 - - [06/Dec/2019:07:55:00 +0000] "POST /admin/resources/addOrUpdate HTTP/1.1" 500 64
+::1 - - [16/Dec/2019:03:02:15 +0000] "POST //admin/record/add HTTP/1.1" 404 157
+::ffff:127.0.0.1 - - [16/Dec/2019:08:24:38 +0000] "GET /admin/record/list?pageNo=1&pageSize=10&theme_id=2 HTTP/1.1" 404 156

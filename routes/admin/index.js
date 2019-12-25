@@ -8,6 +8,7 @@ var AccessRouter = require('./access')
 var EmployeeRouter = require('./employee')
 var AccountRouter = require('./account')
 var StatisticRouter = require('./statistic')
+var RecordRouter = require('./record')
 
 
 module.exports = app => {
@@ -21,4 +22,5 @@ module.exports = app => {
     app.use('/admin/employee', EmployeeRouter)
     app.use('/admin/account', AccountRouter)
     app.use('/admin/statistic', StatisticRouter)
+    app.use('/admin/record', RecordRouter)
 }

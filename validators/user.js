@@ -11,11 +11,7 @@ class UserValidator extends Base {
         ])(req, res, next)
     }
 
-    checkUserNo(req, res, next){
-        return validate([
-            check('user_no').exists().withMessage('user_no不能为空')
-        ])(req, res, next) 
-    }
+
 }
 
 module.exports = new UserValidator()

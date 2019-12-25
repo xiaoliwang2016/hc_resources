@@ -24,6 +24,12 @@ class Base {
         ])(req, res, next) 
     }
 
+    checkUserNo(req, res, next){
+        return validate([
+            check('user_no').exists().withMessage('user_no不能为空')
+        ])(req, res, next) 
+    }
+    
     checkAdminId(req, res, next){
         return validate([
             check('admin_id').exists().withMessage('admin_id不能为空')
