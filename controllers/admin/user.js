@@ -1,7 +1,7 @@
 var sequelize = require('../../db/mysql').sequelize
 var Op = require('../../db/mysql').Sequelize.Op
 var md5 = require('md5')
-var { build_tree } = require('../../utils/util')
+var { build_tree, removeDuplicateViaId } = require('../../utils/util')
 
 var UserModel = sequelize.import('../../models/user')
 var UserThemeModel = sequelize.import('../../models/user_theme')
@@ -60,6 +60,42 @@ class User{
             })
             data = list.map(item => item.toJSON())
         }else{
+            var resources = []
+            //找出该用户对应角色下所有权限
+            var roles = await UserModel.findOne({
+                where: {
+                    id: req.query.user_id
+                },
+                include: [
+                    {
+                        model: RoleModel,
+                        required: false,
+                        where: {
+                            role_group: 0
+                        },
+                        include: [
+                            {
+                                model: ResourcesModel,
+                                required: false,
+                                where: {
+                                    theme_id: req.query.theme_id
+                                },
+                                include: [
+                                    {
+                                        model: LinkModel,
+                                        order: ["order"]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            roles = roles.toJSON().roles
+            roles.map(role => {
+                resources = resources.concat(role.resources)
+            })
+            //找出改用户下所有权限
             var list = await UserModel.findOne({
                 where: {
                     id: req.query.user_id
@@ -80,8 +116,10 @@ class User{
                     }
                 ]
             })
-            list = list.toJSON().resources
-            data = list.sort((a, b) => (b.resources_order - a.resources_order))
+            //合并、去重
+            resources = resources.concat(list.toJSON().resources)
+            resources = removeDuplicateViaId(resources)
+            data = resources.sort((a, b) => (b.resources_order - a.resources_order))
         }
         data.map((resources, index) => {
             resources.links.sort((a, b) => {

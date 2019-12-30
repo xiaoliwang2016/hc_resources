@@ -146,7 +146,8 @@ class ResourcesController{
             },
             fields: ['id']
         }), resourcesIds = []
-        resources.map(item => { resourcesIds.push(item.id) })        
+        resources.map(item => { resourcesIds.push(item.id) })
+        //先删除   
         await UserResourcesModel.destroy({
             where: {
                 user_id: req.body.user_id,
@@ -160,6 +161,7 @@ class ResourcesController{
             resources_id: item,
             user_id: req.body.user_id
         }))
+        //后创建
         await UserResourcesModel.bulkCreate(data, {
             fields: ['resources_id', 'user_id']
         })
